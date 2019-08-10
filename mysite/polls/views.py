@@ -1,10 +1,8 @@
 from django.shortcuts import render
-import pandas as pd
 import numpy as np
 import pandas as pd
 import pymysql
 pymysql.install_as_MySQLdb()
-import zipfile
 from sqlalchemy import create_engine
 import os
 from datetime import datetime
@@ -14,7 +12,15 @@ from django.http import HttpResponse
 
 
 def index(request):
-    f = open("/Users/a/Desktop/NASDAQ.json", "r")
+    f = open("polls/data/NASDAQ.json", "r")
+    str = f.read()
+    f.close()
+    return HttpResponse(str)
+def buildAssetClass(request):
+    asset_class = request.GET.get('asset_class')
+    url = "polls/data/"+asset_class+".json"
+    print(url)
+    f = open(url, "r")
     str = f.read()
     f.close()
     return HttpResponse(str)

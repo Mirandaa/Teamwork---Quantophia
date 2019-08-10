@@ -7,6 +7,6 @@ from django.urls import include, path
 urlpatterns = [
     path('', views.index, name='index'),
     path('banktest', views.runbanktest, name='banktest'),
-    # path('banktestmacd', views.banktestmacd, name='banktest'),
+    path('getticker', views.buildAssetClass, name='buildAssetClass'),
 
 ]
