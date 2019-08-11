@@ -29,7 +29,7 @@ Parameter example:
 
 ```json
 {
-  'asset_class': 'NASDAQ'
+  "asset_class": "NASDAQ"
 }
 ```
 
@@ -37,11 +37,11 @@ Return data:
 
 ```json
 {
-  'error': {
-    'code': 1,
-    'message': 'Get security success'
+  "error": {
+    "code": 1,
+    "message": "Get security success"
   },
-  'data': {
+  "data": {
     ['AACC', 'AAME', 'AAON', 'AAPL', 'AAWW', 'AAXJ', 'ABAX', 'ABCB', 'ABCD', 'ABCO', 'ABFS', 'ABIO', 'ABMD', 'ABTL', 'ACAD', 'ACAS', 'ACAT', 'ACCL', 'ACET', 'ACFC', 'ACFN', 'ACGL', 'ACHN', 'ACIW', 'ACLS', 'ACNB', 'ACOR', 'ACPW', 'ACTG', 'ACTS', 'ACUR', 'ACWI', 'ACWX', 'ACXM', 'ADAT', 'ADBE', 'ADEP', 'ADES', 'ADI', 'ADP', 'ADRA', 'ADRD', 'ADRE', 'ADRU', 'ADSK', 'ADTN', 'ADUS', 'ADVS', 'AEGR']
   }
 }
