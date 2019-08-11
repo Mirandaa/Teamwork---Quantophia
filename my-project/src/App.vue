@@ -58,7 +58,7 @@
                         <div class="picker-left2">
                           Security:
                         </div>
-                        <Select class="picker-button" v-model="modelSecurity" clearable placeholder="Select security">
+                        <Select class="picker-button" v-model="modelSecurity" clearable placeholder="Select security" @on-open-change="getSecurityData()">
                           <Option v-for="item in security" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <Button type="primary" ghost class="add-button" @click="addProduct">Add</Button>
@@ -133,7 +133,10 @@
                         </Select>
                       </Row>
                     </div>
-                    <schart class="wrapper" :canvasId="canvasId" :type="type" :data="data" :options="options"></schart>
+                    <div class="chart">
+                      <h2>Line chart</h2>
+                      <linechart/>
+                    </div>
 
                 </Card>
             </Content>
@@ -146,7 +149,8 @@
 </template>
 
 <script>
-import Schart from 'vue-schart';
+// import Schart from 'vue-schart';
+import LineChart from '@/components/LineChart'
 
 export default {
   data() {
@@ -167,32 +171,23 @@ export default {
       ],
       assetClass: [
         {
-          value: 'Equity',
-          label: 'Equity'
+          value: 'FOREX',
+          label: 'FOREX'
         },
         {
-          value: 'Commodity',
-          label: 'Commodity'
+          value: 'IntradayNYSEMS7',
+          label: 'IntradayNYSEMS7'
         },
         {
-          value: 'Bonds',
-          label: 'Bonds',
+          value: 'LIFFE_FuturesOptions',
+          label: 'LIFFE_FuturesOptions',
         },
         {
-          value: 'Forex',
-          label: 'Forex'
+          value: 'NASDAQ',
+          label: 'NASDAQ'
         }
       ],
-      security: [
-        {
-          value: 'IBM',
-          label: 'IBM'
-        },
-        {
-          value: 'GBPUSD',
-          label: 'GBPUSD'
-        }
-      ],
+      security: [],
       strategy: [
         {
           value: 'MACD',
@@ -238,27 +233,7 @@ export default {
         }
       ],
       tableProductData: [],
-      tableStrategyData: [],
-
-      canvasId: 'myCanvas',
-      type: 'line',
-      data: [
-        {name: '2014', value: 1342},
-        {name: '2015', value: 2123},
-        {name: '2016', value: 1654},
-        {name: '2017', value: 1795},
-      ],
-      options: {
-        padding: 50,                   // canvas 内边距
-        bgColor: '#FFFFFF',            // 默认背景颜色
-        title: 'vue-schart互动演示案例',// 图表标题
-        titleColor: '#000000',         // 图表标题颜色
-        titlePosition: 'top',      // 图表标题位置: top / bottom
-        yEqual: 5,                     // y轴分成5等分
-        fillColor: '#1E9FFF',          // 默认填充颜色
-        contentColor: '#eeeeee',       // 内容横线颜色
-        axisColor: '#666666',          // 坐标轴颜色
-      }
+      tableStrategyData: []
     }
   },
   mounted() {
@@ -296,6 +271,8 @@ export default {
     addProduct() {
       this.tableProductData.push({assetClass: this.modelProduct, security: this.modelSecurity})
       console.log(this.tableProductData)
+      this.modelProduct = ''
+      this.modelSecurity = ''
     },
 
     removeProduct(index) {
@@ -311,14 +288,69 @@ export default {
       this.tableStrategyData.splice(index, 1)
     },
 
-    submitData() {
+    getSecurityData() {
+      // get securties data from asset class
+      console.log('select asset class: ' + '/getticker')
+      // this.axios.get('/getticker' {
+      //   params: {
+      //     asset_class: this.modelProduct
+      //   }
+      // })
+      // .then(function (response) {
+      //   console.log(response)
+      //   response.data
+      // })
+      // .catch(function (error) {
+      //   console.log(error)
+      // })
+      this.axios({
+        method: 'get',
+        url: 'http://192.168.43.141:8899/api/getSecurity',
+        responseType: 'json',
+        contentType: 'application/json',
+        params: {
+          asset_class: this.modelProduct
+        }
+      })
+      .then(function (response) {
+        console.log('response:' + response.data)
+        this.security = response.data
+      })
+      // if (this.modelProduct == 'NASDAQ') {
+      //   this.security = [
+      //   {
+      //     value: 'IBM',
+      //     label: 'IBM'
+      //   },
+      //   {
+      //     value: 'GBPUSD',
+      //     label: 'GBPUSD'
+      //   }]
+      // }
+      // else {
+      //   this.security = []
+      // } 
+    },
 
+    submitData() {
+      // submit all data to backend
+      console.log('click submit button:' + '/config')
+      this.axios({
+        method: 'post',
+        url: '/config',
+        data: {
+          startTime,
+          endTime,
+          modelFrequency,
+          tableProductData,
+          tableStrategyData
+        }
+      })
     }
   },
-  components:{
-    Schart
+  components: {
+    'linechart': LineChart
   }
-
 }
 
 </script>
@@ -435,5 +467,16 @@ export default {
 
 .layout-footer-center{
     text-align: center;
+}
+
+.chart{
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.chart h2 {
+  margin-top: 0;
+  padding: 10px 0 20px 0;
+  color: #2c3e50;
 }
 </style>

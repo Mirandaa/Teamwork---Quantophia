@@ -7,18 +7,18 @@ const path = require('path')
 module.exports = {
   dev: {
 
-    // Paths
+    // Paths 改过了
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-        '/api': {
-            target: 'http://192.168.43.141:8899',
+         '/api':{
+            target:"https://api.coindesk.com/v1" //wait for change
             changeOrigin: true,
             pathRewrite: {
-                '^/api': ''
+                '^/api':  ''
             }
-        }
-    },
+         }
+    }，
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
