@@ -290,20 +290,46 @@ export default {
 
     getSecurityData() {
       // get securties data from asset class
-      if (this.modelProduct == 'NASDAQ') {
-        this.security = [
-        {
-          value: 'IBM',
-          label: 'IBM'
-        },
-        {
-          value: 'GBPUSD',
-          label: 'GBPUSD'
-        }]
-      }
-      else {
-        this.security = []
-      } 
+      console.log('select asset class: ' + '/getticker')
+      // this.axios.get('/getticker' {
+      //   params: {
+      //     asset_class: this.modelProduct
+      //   }
+      // })
+      // .then(function (response) {
+      //   console.log(response)
+      //   response.data
+      // })
+      // .catch(function (error) {
+      //   console.log(error)
+      // })
+      this.axios({
+        method: 'get',
+        url: 'http://192.168.43.141:8899/api/getSecurity',
+        responseType: 'json',
+        contentType: 'application/json',
+        params: {
+          asset_class: this.modelProduct
+        }
+      })
+      .then(function (response) {
+        console.log('response:' + response.data)
+        this.security = response.data
+      })
+      // if (this.modelProduct == 'NASDAQ') {
+      //   this.security = [
+      //   {
+      //     value: 'IBM',
+      //     label: 'IBM'
+      //   },
+      //   {
+      //     value: 'GBPUSD',
+      //     label: 'GBPUSD'
+      //   }]
+      // }
+      // else {
+      //   this.security = []
+      // } 
     },
 
     submitData() {

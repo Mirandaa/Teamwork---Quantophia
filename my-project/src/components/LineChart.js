@@ -9,7 +9,6 @@ export default {
     this.renderChart({
       // labels 表示x轴的配置
       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      xlabel: 'Date',
       // datasets 是个数组 表示线性走势及对走势线的配置
       datasets: [
         {
