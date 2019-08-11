@@ -10,21 +10,29 @@ from datetime import datetime
 from datetime import timedelta
 # Create your views here.
 from django.http import HttpResponse
-
-
+dict = {}
+f = open('polls/data/FOREX.json', 'r')
+FOREX = f.read()
+f = open('polls/data/IntradayNYSEMS7.json', 'r')
+IntradayNYSEMS7 = f.read()
+f = open('polls/data/LIFFE_FuturesOptions.json', 'r')
+LIFFE_FuturesOptions = f.read()
+f = open('polls/data/NASDAQ.json', 'r')
+NASDAQ = f.read()
+dict["FOREX"] = FOREX
+dict["IntradayNYSEMS7"] = IntradayNYSEMS7
+dict["LIFFE_FuturesOptions"] = LIFFE_FuturesOptions
+dict["NASDAQ"] = NASDAQ
 def index(request):
     return HttpResponse("Welcom BackTest!!!")
 def buildAssetClass(request):
+    print("+++++++++")
     asset_class = request.GET.get('asset_class')
-    url = "polls/data/"+asset_class+".json"
-    print(url)
-    f = open(url, "r")
-    str = f.read()
-    f.close()
-    return HttpResponse(str)
+    result = ""+str(dict[asset_class])
+    return HttpResponse(result)
 def runbanktest(request):
-
     asset_class = request.GET.get('asset_class')
+
     st = request.GET.get('start').split('-')
     ed = request.GET.get('end').split('-')
     start = datetime(int(st[0]),int(st[1]),int(st[2]))
