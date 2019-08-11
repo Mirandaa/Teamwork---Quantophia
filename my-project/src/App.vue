@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- <router-view/> -->
 
     <Menu mode="horizontal">
       <div class="title">
@@ -58,7 +59,7 @@
                         <div class="picker-left2">
                           Security:
                         </div>
-                        <Select class="picker-button" v-model="modelSecurity" clearable placeholder="Select security" @on-open-change="getSecurityData()">
+                        <Select filterable class="picker-button" v-model="modelSecurity" clearable placeholder="Select security" @on-open-change="getSecurityData()">
                           <Option v-for="item in security" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <Button type="primary" ghost class="add-button" @click="addProduct">Add</Button>
@@ -290,31 +291,18 @@ export default {
 
     getSecurityData() {
       // get securties data from asset class
-      console.log('select asset class: ' + '/getticker')
-      // this.axios.get('/getticker' {
-      //   params: {
-      //     asset_class: this.modelProduct
-      //   }
-      // })
-      // .then(function (response) {
-      //   console.log(response)
-      //   response.data
-      // })
-      // .catch(function (error) {
-      //   console.log(error)
-      // })
+      console.log('select asset class: ' + '/getSecurity')
       this.axios({
         method: 'get',
         url: 'http://192.168.43.141:8899/api/getSecurity',
-        responseType: 'json',
-        contentType: 'application/json',
         params: {
-          asset_class: this.modelProduct
+          asset_class: 'FOREX'
         }
       })
       .then(function (response) {
         console.log('response:' + response.data)
-        this.security = response.data
+      }).catch(function(err) {
+        console.log(err)
       })
       // if (this.modelProduct == 'NASDAQ') {
       //   this.security = [
