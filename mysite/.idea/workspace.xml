@@ -17,10 +17,10 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/polls/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="31" column="30" lean-forward="false" selection-start-line="31" selection-start-column="24" selection-end-line="31" selection-end-column="30" />
+            <state relative-caret-position="444">
+              <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
               <folding>
-                <marker date="1565519456079" expanded="true" signature="1874:1922" ph="select ticke... " />
+                <marker date="1565520919656" expanded="true" signature="1874:1922" ph="select ticke... " />
               </folding>
             </state>
           </provider>
@@ -233,7 +233,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1565519456079" expanded="true" signature="1874:1922" ph="select ticke... " />
+            <marker date="1565520919656" expanded="true" signature="1874:1922" ph="select ticke... " />
           </folding>
         </state>
       </provider>
@@ -253,7 +253,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1565519456079" expanded="true" signature="1874:1922" ph="select ticke... " />
+            <marker date="1565520919656" expanded="true" signature="1874:1922" ph="select ticke... " />
           </folding>
         </state>
       </provider>
@@ -370,10 +370,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/polls/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="31" column="30" lean-forward="false" selection-start-line="31" selection-start-column="24" selection-end-line="31" selection-end-column="30" />
+        <state relative-caret-position="444">
+          <caret line="139" column="0" lean-forward="true" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
           <folding>
-            <marker date="1565519456079" expanded="true" signature="1874:1922" ph="select ticke... " />
+            <marker date="1565520919656" expanded="true" signature="1874:1922" ph="select ticke... " />
           </folding>
         </state>
       </provider>
