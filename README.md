@@ -95,3 +95,16 @@ http://149.28.47.146:8899/api/configuration
 > my-project : front end
 >
 > my-site: back end
+
+### Run Vue.js 
+
+```
+# go to my-project directory
+cd my-project
+
+# run your vue project
+npm run dev
+```
+
+
+
