@@ -118,3 +118,22 @@ def MACD(asset_class,security, start, end):
     return df[['exp_Strategy','exp_Market']]
     
     ###Strategy
+def dual_thrust(data,K1,K2):
+    HH = max(data['<high>'])
+    LC = min(data['<close>'])
+    HC = max(data['<close>'])
+    LL = min(data['<low>'])
+    # 获取 Range
+    Range = max((HH-LC),(HC-LL))
+    # 计算BuyLine 和 SellLine
+    data['BuyLine'] = data['<open>'] + K1 * Range
+    data['SellLine'] = data['<open>'] - K2 * Range
+    data['Regime']= np.where( data['<close>'] < data['SellLine'] ,1,0)
+    #data['Regime']= np.where( (data['<close>']-data['<close>'].shift(1))/data['<close>'].shift(1)>=0.02 , 1,0)
+    data['Regime']= np.where( data['<close>'] > data['BuyLine'] , -1,data['Regime'])
+    data["Market"] =np.log( data['<close>']/data['<close>'].shift(1))
+    data['Strategy']=data['Regime'].shift(1)*data['Market']
+    data['exp_Strategy']=data['Strategy'].cumsum().apply(np.exp)
+    data['exp_Market']=data["Market"].cumsum().apply(np.exp)
+    data['payoff'] = data['exp_Strategy']-data['exp_Market']
+    return data
