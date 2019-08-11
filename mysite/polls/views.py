@@ -1,8 +1,9 @@
-from django.shortcuts import render
+
 import numpy as np
 import pandas as pd
 import pymysql
 pymysql.install_as_MySQLdb()
+
 from sqlalchemy import create_engine
 import os
 from datetime import datetime
@@ -12,10 +13,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    f = open("polls/data/NASDAQ.json", "r")
-    str = f.read()
-    f.close()
-    return HttpResponse(str)
+    return HttpResponse("Welcom BackTest!!!")
 def buildAssetClass(request):
     asset_class = request.GET.get('asset_class')
     url = "polls/data/"+asset_class+".json"
