@@ -5,7 +5,8 @@ class Constants:
     SQLCONNECT = "mysql://root:@localhost/mysql1"
     ERRORMSG = 'buildAssetClass() return  security[] error'
     JSONPATH = "polls/data/"
-    testMsg = {"msg":"Welcom BackTest!!!"}
+    testMsg = {"data":"Welcom BackTest!!!"}
+    STOCK = ""
     def getSQL(self,asset_class,security, start, end):
         return "select date, ticker,open ,high,low,close,vol from "+asset_class+" where date > '"\
           +str(start)+" ' and date < '"+str(end)+"' and ticker = '"+security+"';"

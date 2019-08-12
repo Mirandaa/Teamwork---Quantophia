@@ -341,15 +341,15 @@ export default {
         console.log(err)
       })
       // if (this.modelProduct == 'NASDAQ') {
-        // this.security = [
-        // {
-        //   value: 'IBM',
-        //   label: 'IBM'
-        // },
-        // {
-        //   value: 'GBPUSD',
-        //   label: 'GBPUSD'
-        // }]
+        this.security = [
+        {
+          value: 'IBM',
+          label: 'IBM'
+        },
+        {
+          value: 'GBPUSD',
+          label: 'GBPUSD'
+        }]
       // }
       // else {
       //   this.security = []
