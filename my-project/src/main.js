@@ -10,7 +10,16 @@ import axios from 'axios'
 Vue.use(iView)
 Vue.prototype.axios = axios //Vue.prototype.名字(这个名字随便起，一般是叫$http或者$https，那么一看就明白，你这是在往后端发送请求)
 Vue.config.productionTip = false
+axios.defaults.baseURL = 'http://127.0.0.1:8899/api'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+axios.interceptors.request.use(function (config) {
+    // 在发送请求之前做些什么
+  return config
+}, function (error) {
+    // 对请求错误做些什么
+  return Promise.reject(error)
+})
 
 /* eslint-disable no-new */
 new Vue({

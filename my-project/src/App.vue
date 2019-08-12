@@ -109,30 +109,35 @@
 
                 <Card>
                     <div class="config-selection">
-                      <img src="./assets/time.svg" alt="">
-                      <div class="selection-title">
-                        Select Time
-                      </div>
-                      <Row class="picker">
-                        <div class="picker-left">
-                          From:
-                        </div>
-                        <Col span="12" class="picker-button">
-                          <DatePicker type="date" v-model="startTime" placeholder="Select start date" :options="startTimeOption" @on-change="onStartTimeChange" class="picker-style"/>
-                        </Col>
-                        <div class="picker-left-to">
-                          To:
-                        </div>
-                        <Col span="12" class="picker-button">
-                          <DatePicker type="date" v-model="endTime" placeholder="Select end date" :options="endTimeOption" @on-change="onEndTimeChange" class="picker-style"/>
-                        </Col>
-                        <div class="picker-left2">
-                          Frequency:
-                        </div>
-                        <Select class="picker-style picker-button " v-model="modelFrequency" clearable placeholder="Select frequency">
-                          <Option v-for="item in frequencies" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
+                      <Row>
+                        <h6>MACD</h6>
+                        Yield
+                        <Divider type="vertical" />
+                        Benchmark
+                        <Divider type="vertical" />
+                        Sharpe Ratio
+                        <Divider type="vertical" />
+                        Alpha
+                        <Divider type="vertical" />
+                        Beta
+                        <Divider type="vertical" />
+                        Max Drawdown
                       </Row>
+
+                      <Row>
+                        15.11%
+                        <Divider type="vertical" />
+                        12.87%
+                        <Divider type="vertical" />
+                        0.303
+                        <Divider type="vertical" />
+                        0.026
+                        <Divider type="vertical" />
+                        0.956
+                        <Divider type="vertical" />
+                        28.05%
+                      </Row>
+
                     </div>
                     <div class="chart">
                       <h2>Line chart</h2>
@@ -326,30 +331,33 @@ export default {
 
     getSecurityData() {
       // get securties data from asset class
+      let that = this
       console.log('select asset class: ' + '/getSecurity')
       this.axios({
         method: 'get',
-        url: 'http://127.0.0.1:8899/api/getSecurity',
-        // timeout: 100000 * 60 * 2,
+        url: '/getSecurity',
+        // timeout: 1000000 * 60 * 2,
         params: {
           asset_class: this.modelProduct
         }
       })
       .then(function (response) {
-        console.log('response:' + response.data)
-      }).catch(function(err) {
-        console.log(err)
+        console.log(response.data.data.security)
+        that.security = response.data.data.security
+      }).catch(function (error) {
+        console.log(error)
       })
+
       // if (this.modelProduct == 'NASDAQ') {
-        this.security = [
-        {
-          value: 'IBM',
-          label: 'IBM'
-        },
-        {
-          value: 'GBPUSD',
-          label: 'GBPUSD'
-        }]
+        // this.security = [
+        // {
+        //   value: 'IBM',
+        //   label: 'IBM'
+        // },
+        // {
+        //   value: 'GBPUSD',
+        //   label: 'GBPUSD'
+        // }]
       // }
       // else {
       //   this.security = []
