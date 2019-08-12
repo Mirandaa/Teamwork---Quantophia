@@ -29,8 +29,11 @@ def buildAssetClass(request):
         securitylist = df[Constants.SECURITY]
         securitylist = list(securitylist.map(lambda x: {"value": x, "label": x}))
 
-        response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(securitylist)}
-        return HttpResponse(response)
+
+        # response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(securitylist)}
+        response.data = Constants.testMsg
+        print(response)
+        return HttpResponse({response:''})
     except:
         response.errorCode = -1
         response.errorMsg = Constants.ERRORMSG
