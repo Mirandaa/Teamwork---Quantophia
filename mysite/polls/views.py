@@ -1,89 +1,91 @@
-
 import numpy as np
 import pandas as pd
 import pymysql
+import logging
+import json
+from sqlalchemy import create_engine
+from datetime import datetime
+from django.http import HttpResponse
+from polls.response import Response
+from polls.constants import Constants,TableColumn,Strategies
 pymysql.install_as_MySQLdb()
 
-from sqlalchemy import create_engine
-import os
-from datetime import datetime
-from datetime import timedelta
-# Create your views here.
-from django.http import HttpResponse
-dict = {}
-f = open('polls/data/FOREX.json', 'r')
-FOREX = f.read()
-f = open('polls/data/IntradayNYSEMS7.json', 'r')
-IntradayNYSEMS7 = f.read()
-f = open('polls/data/LIFFE_FuturesOptions.json', 'r')
-LIFFE_FuturesOptions = f.read()
-f = open('polls/data/NASDAQ.json', 'r')
-NASDAQ = f.read()
-dict["FOREX"] = FOREX
-dict["IntradayNYSEMS7"] = IntradayNYSEMS7
-dict["LIFFE_FuturesOptions"] = LIFFE_FuturesOptions
-dict["NASDAQ"] = NASDAQ
-def index(request):
-    return HttpResponse("Welcom BackTest!!!")
-def buildAssetClass(request):
-    print("+++++++++")
-    asset_class = request.GET.get('asset_class')
-    result = ""+str(dict[asset_class])
-    return HttpResponse(result)
-def runbanktest(request):
-    asset_class = request.GET.get('asset_class')
+logging.basicConfig(level=logging.DEBUG)
 
-    st = request.GET.get('start').split('-')
-    ed = request.GET.get('end').split('-')
-    start = datetime(int(st[0]),int(st[1]),int(st[2]))
-    end = datetime(int(ed[0]),int(ed[1]),int(ed[2]))
-    security = request.GET.get('security')
-    strategy = request.GET.get('strategy')
-    if strategy == "KAMA" :
-        result = KAMA(asset_class,security,start,end).to_json(orient='split')
-        result = '{"asset_class":'+asset_class+',"security:"'+security+',"result":'+result+'}'
-        return HttpResponse(result)
-    elif strategy == "MACD" :
-        result = MACD(asset_class,security,start,end).to_json(orient='split')
-        return HttpResponse(result)
-    return HttpResponse("Do not have this strategy")
+
+def index(request):
+    logging.info('index() method running')
+    response = Response()
+    response.data = Constants.testMsg
+    return HttpResponse(response)
+
+def buildAssetClass(request):
+    logging.info('buildAssetClass() method running')
+    response = Response()
+    try:
+        asset_class = request.GET.get(Constants.ASSET_CLASS)
+
+        df = pd.read_json(Constants.JSONPATH+asset_class+".json")
+
+        response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(df[Constants.SECURITY])}
+        return HttpResponse(response)
+    except:
+        response.errorCode = -1
+        response.errorMsg = Constants.ERRORMSG
+        logging.error(response.errorMsg)
+        return HttpResponse(response)
+
+#
+# def runbanktest(request):
+#     asset_class = request.GET.get('asset_class')
+#     st = request.GET.get('start').split('-')
+#     ed = request.GET.get('end').split('-')
+#     start = datetime(int(st[0]),int(st[1]),int(st[2]))
+#     end = datetime(int(ed[0]),int(ed[1]),int(ed[2]))
+#     security = request.GET.get('security')
+#     strategy = request.GET.get('strategy')
+#     if strategy == "KAMA" :
+#         result = KAMA(asset_class,security,start,end).to_json(orient='split')
+#         result = '{"asset_class":'+asset_class+',"security:"'+security+',"result":'+result+'}'
+#         return HttpResponse(result)
+#     elif strategy == "MACD" :
+#         result = MACD(asset_class,security,start,end).to_json(orient='split')
+#         return HttpResponse(result)
+#     return HttpResponse("Do not have this strategy")
 
 def LoadAllDataFrames(asset_class,security, start, end):
-    
-    dfs = pd.DataFrame()
-
-    engine = create_engine('mysql://root:@localhost/mysql1')
-    sql = "select date, ticker,open,high,low,close,vol from "+asset_class+" where date > '"+str(start)+" ' and date < '"+str(end)+"' and ticker = '"+security+"';"
-
+    logging.info('LoadAllDataFrames() method running')
+    if()
+    engine = create_engine(Constants.SQLCONNECT)
+    sql = Constants.getSQL(asset_class,security, start, end)
     data = pd.read_sql(sql, con=engine)
     data.reset_index()
-    data.index = data['date']
+    data.index = data[TableColumn.DATE]
     print(data.head())
 
     return data
 
-    return dfs
 
 def KAMA(asset_class,security, start, end):
-    
+    logging.info('KAMA() method running')
     df = LoadAllDataFrames(asset_class,security, start, end)
-    df['Change'] = np.abs( df['close'] - df['close'].shift(10))
-    df['Volatility'] = np.abs( df['close'] - df['close'].shift(1)).rolling(10).sum()
+    df['Change'] = np.abs(df[TableColumn.CLOSE] - df[TableColumn.CLOSE].shift(10))
+    df['Volatility'] = np.abs(df[TableColumn.CLOSE] - df[TableColumn.CLOSE].shift(1)).rolling(10).sum()
     df['ER'] = df['Change'] / df['Volatility']
     df['SC'] = (df['ER'] *(1/(1+1) - 1/(30+1)) + 1/(30+1))**2
-    df['KAMA']=0
-    df['KAMA'][0] = df['close'][0:10].mean()
-    df['KAMA'] = df['KAMA'].shift(1)+df['SC']*(df['close'] - df['KAMA'].shift(1))
+    df[Strategies.KAMA]=0
+    df[Strategies.KAMA][0] = df[TableColumn.CLOSE][0:10].mean()
+    df[Strategies.KAMA] = df[Strategies.KAMA].shift(1) + df['SC'] * (df[TableColumn.CLOSE] - df[Strategies.KAMA].shift(1))
     thr = 0.0002
-    df['Regime']=0
-    df['Regime']=np.where((((df['KAMA'] - df['KAMA'].shift(1))>thr) & ((df['KAMA'].shift(1) - df['KAMA'].shift(2))>thr)),1,0)
-    df['Regime']=np.where((((df['KAMA'] - df['KAMA'].shift(1))< -thr )& ((df['KAMA'].shift(1) - df['KAMA'].shift(2))< -thr)),-1,df['Regime'])
-    df['Market'] = np.log(df['close'] / df['close'].shift(1))
-    df['Strategy'] = df['Regime'].shift(1)*df['Market']
-    cols = ['Market','Strategy']
-    return df[cols].cumsum().apply(np.exp)
+    df[TableColumn.REGIME]=0
+    df[TableColumn.REGIME]=np.where((((df[Strategies.KAMA] - df[Strategies.KAMA].shift(1)) > thr) & ((df[Strategies.KAMA].shift(1) - df[Strategies.KAMA].shift(2)) > thr)), 1, 0)
+    df[TableColumn.REGIME]=np.where((((df[Strategies.KAMA] - df[Strategies.KAMA].shift(1)) < -thr) & ((df[Strategies.KAMA].shift(1) - df[Strategies.KAMA].shift(2)) < -thr)), -1, df['Regime'])
+    df[TableColumn.MARKET] = np.log(df[TableColumn.CLOSE] / df[TableColumn.CLOSE].shift(1))
+    df[TableColumn.STRATEGY] = df[TableColumn.REGIME].shift(1)*df[TableColumn.MARKET]
+    # return df[TableColumn.RESULTCOLS].cumsum().apply(np.exp)
 
 def cal_macd(data,short_,long_,m):
+    logging.info('cal_macd() method running')
     data['diff']=data['close'].ewm(adjust=False,alpha=2/(short_+1),ignore_na=True).mean()-\
                 data['close'].ewm(adjust=False,alpha=2/(long_+1),ignore_na=True).mean()
     
@@ -95,30 +97,30 @@ def cal_macd(data,short_,long_,m):
 
 
 def MACD(asset_class,security, start, end):
-    
+    response = Response()
+    logging.info('MACD() method running')
     df = LoadAllDataFrames(asset_class,security, start, end)
-
-    df = df.sort_index(ascending=True)    
-   
+    df = df.sort_index(ascending=True)
     ### MACD Strategy 
      
     macd_data = cal_macd(df,12,26,9)  
     df['cal_diff']= macd_data['diff'] -macd_data['diff'].shift(1)
     df['cal_dea'] = macd_data['dea'] -macd_data['dea'].shift(1)
-    df['Regime']= np.where((df['cal_diff'] < 0) & (df['cal_dea'] < 0) , 1,0)
-    df['Regime']= np.where((df['cal_diff'] > 0) & (df['cal_dea'] > 0)  ,-1,df['Regime'])   
-    df["Market"] =np.log( df['close']/df['close'].shift(1))
-    df['Strategy']=df['Regime'].shift(1)*df['Market']
+    df[TableColumn.REGIME]= np.where((df['cal_diff'] < 0) & (df['cal_dea'] < 0) , 1,0)
+    df[TableColumn.REGIME]= np.where((df['cal_diff'] > 0) & (df['cal_dea'] > 0)  ,-1,df[TableColumn.REGIME])
+    df[TableColumn.MARKET] =np.log( df[TableColumn.CLOSE]/df[TableColumn.CLOSE].shift(1))
+    df[TableColumn.STRATEGY]=df[TableColumn.REGIME].shift(1)*df[TableColumn.MARKET]
 
-    df['exp_Strategy']=df['Strategy'].cumsum().apply(np.exp)
-    df['exp_Market']=df["Market"].cumsum().apply(np.exp)
-    df['Yield'] = df['exp_Strategy']-df['exp_Market']
-    res = df['Yield'][-1]
-
-    return df[['exp_Strategy','exp_Market']]
+    df[TableColumn.EXP_STRATEGY]=df[TableColumn.STRATEGY].cumsum().apply(np.exp)
+    df[TableColumn.EXP_MARKET]=df[TableColumn.MARKET].cumsum().apply(np.exp)
+    df[TableColumn.YIELD] = df[TableColumn.EXP_STRATEGY]-df[TableColumn.EXP_MARKET]
+    res = df[TableColumn.YIELD][-1]
+    response.data={Constants.ASSET_CLASS: asset_class, Constants.SECURITY:security,"poltData":list(df[TableColumn.RESULTCOLS]),TableColumn.YIELD:res}
+    return response
     
     ###Strategy
 def dual_thrust(data,K1,K2):
+    logging.info('dual_thrust() method running')
     HH = max(data['<high>'])
     LC = min(data['<close>'])
     HC = max(data['<close>'])
