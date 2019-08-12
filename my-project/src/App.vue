@@ -53,16 +53,16 @@
                         <div class="picker-left">
                           Asset Class:
                         </div>
-                        <Select class="picker-button" v-model="modelProduct" clearable placeholder="Select asset class">
+                        <Select class="picker-button" v-model="modelProduct" clearable placeholder="Select asset class" @on-change="getSecurityData()">
                           <Option v-for="item in assetClass" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <div class="picker-left2">
                           Security:
                         </div>
-                        <Select filterable class="picker-button" v-model="modelSecurity" clearable placeholder="Select security" @on-open-change="getSecurityData()">
+                        <Select filterable class="picker-button" v-model="modelSecurity" clearable placeholder="Select security">
                           <Option v-for="item in security" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
-                        <Button type="primary" ghost class="add-button" @click="addProduct">Add</Button>
+                        <Button type="primary" ghost class="add-button" @click="addProduct" :disabled="!modelProduct || !modelSecurity">Add</Button>
                       </Row>
                       <Table stripe border :columns="productColumns" :data="tableProductData" class="data-table">
                         <template slot-scope="{ row }" slot="assetClass">
@@ -86,7 +86,7 @@
                         <Select class="picker-button" v-model="modelStrategy" clearable placeholder="Select strategy">
                           <Option v-for="item in strategy" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
-                        <Button type="primary" ghost class="add-button" @click="addStrategy">Add</Button>
+                        <Button type="primary" ghost class="add-button" @click="addStrategy" :disabled="!modelStrategy">Add</Button>
                       </Row>
                       <Table stripe border :columns="strategyColumns" :data="tableStrategyData" class="data-table">
                         <template slot-scope="{ row }" slot="strategy">
@@ -96,7 +96,7 @@
                           <Button type="error" size="small" @click="removeStrategy(index)">Delete</Button>
                         </template>
                       </Table>
-                      <Button type="primary" class="submit-button" @click="submitData">Submit</Button>
+                      <Button type="primary" class="submit-button" @click="submitData" :disabled="!startTime || !endTime || !modelFrequency || tableProductData.length == 0 || tableStrategyData.length == 0">Submit</Button>
                     </div>
                 </Card>
             </Content>
@@ -189,6 +189,10 @@ export default {
         }
       ],
       security: [],
+      securityItem: {
+        value: '',
+        label: ''
+      },
       strategy: [
         {
           value: 'MACD',
@@ -234,7 +238,9 @@ export default {
         }
       ],
       tableProductData: [],
-      tableStrategyData: []
+      securityList: [],
+      tableStrategyData: [],
+      strategyList: []
     }
   },
   mounted() {
@@ -270,23 +276,52 @@ export default {
     },
 
     addProduct() {
-      this.tableProductData.push({assetClass: this.modelProduct, security: this.modelSecurity})
-      console.log(this.tableProductData)
-      this.modelProduct = ''
-      this.modelSecurity = ''
+      var flag = true
+
+      for (var i = 0; i < this.securityList.length; i++) {
+        if (this.modelSecurity == this.securityList[i]) {
+          alert('Already add this product!\nPlease choose another security.')
+          this.modelSecurity = ''
+          flag = false
+        }
+      }
+
+      if (flag) {
+        this.tableProductData.push({assetClass: this.modelProduct, security: this.modelSecurity})
+        this.securityList.push(this.modelSecurity)
+        console.log(this.tableProductData)
+        this.modelProduct = ''
+        this.modelSecurity = ''
+      }
     },
 
     removeProduct(index) {
       this.tableProductData.splice(index, 1)
+      this.securityList.splice(index, 1)
     },
 
     addStrategy() {
-      this.tableStrategyData.push({strategy: this.modelStrategy})
-      console.log(this.tableStrategyData)
+      var flag = true
+
+      for (var i = 0; i < this.strategyList.length; i++) {
+        if (this.modelStrategy == this.strategyList[i]) {
+          alert('Already add this strategy!\nPlease choose another one.')
+          this.modelStrategy = ''
+          flag = false
+        }
+      }
+
+      if (flag) {
+        this.tableStrategyData.push({strategy: this.modelStrategy})
+        this.strategyList.push(this.modelStrategy)
+        console.log(this.tableStrategyData)
+        this.modelStrategy = ''
+      }
     },
 
     removeStrategy(index) {
       this.tableStrategyData.splice(index, 1)
+      this.strategyList.splice(index, 1)
     },
 
     getSecurityData() {
@@ -294,9 +329,10 @@ export default {
       console.log('select asset class: ' + '/getSecurity')
       this.axios({
         method: 'get',
-        url: 'http://192.168.43.141:8899/api/getSecurity',
+        url: 'http://127.0.0.1:8899/api/getSecurity',
+        // timeout: 100000 * 60 * 2,
         params: {
-          asset_class: 'FOREX'
+          asset_class: this.modelProduct
         }
       })
       .then(function (response) {
@@ -305,15 +341,15 @@ export default {
         console.log(err)
       })
       // if (this.modelProduct == 'NASDAQ') {
-      //   this.security = [
-      //   {
-      //     value: 'IBM',
-      //     label: 'IBM'
-      //   },
-      //   {
-      //     value: 'GBPUSD',
-      //     label: 'GBPUSD'
-      //   }]
+        // this.security = [
+        // {
+        //   value: 'IBM',
+        //   label: 'IBM'
+        // },
+        // {
+        //   value: 'GBPUSD',
+        //   label: 'GBPUSD'
+        // }]
       // }
       // else {
       //   this.security = []
