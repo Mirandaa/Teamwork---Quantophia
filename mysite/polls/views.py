@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 import pymysql
 import logging
+import time;
 import json
+
 from sqlalchemy import create_engine
 from datetime import datetime
 from django.http import HttpResponse
@@ -14,13 +16,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def index(request):
-    logging.info('index() method running')
+    logging.info('index() method running  '+time.time())
     response = Response()
     response.data = Constants.testMsg
     return HttpResponse(response)
 
 def buildAssetClass(request):
-    logging.info('buildAssetClass() method running')
+    logging.info('buildAssetClass() method running time: '+str(time.asctime( time.localtime(time.time()) )))
     response = Response()
     try:
         asset_class = request.GET.get(Constants.ASSET_CLASS)
@@ -29,34 +31,33 @@ def buildAssetClass(request):
         securitylist = df[Constants.SECURITY]
         securitylist = list(securitylist.map(lambda x: {"value": x, "label": x}))
         response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(securitylist)}
-        # logging.info("$JSON"+str(response))
-        return HttpResponse("$JSON"+str(response))
+        # logging.info(response.data)
+        #
+        return HttpResponse(str(response))
     except:
-        response.errorCode = -1
-        response.errorMsg = Constants.ERRORMSG
-        logging.error(response.errorMsg)
-        return HttpResponse(response)
+        response.error = {"code":-1,"message":Constants.ERRORMSG}
+        logging.error(Constants.ERRORMSG)
+        return HttpResponse(str(response))
 
-#
-# def runbanktest(request):
-#     asset_class = request.GET.get('asset_class')
-#     st = request.GET.get('start').split('-')
-#     ed = request.GET.get('end').split('-')
-#     start = datetime(int(st[0]),int(st[1]),int(st[2]))
-#     end = datetime(int(ed[0]),int(ed[1]),int(ed[2]))
-#     security = request.GET.get('security')
-#     strategy = request.GET.get('strategy')
-#     if strategy == "KAMA" :
-#         result = KAMA(asset_class,security,start,end).to_json(orient='split')
-#         result = '{"asset_class":'+asset_class+',"security:"'+security+',"result":'+result+'}'
-#         return HttpResponse(result)
-#     elif strategy == "MACD" :
-#         result = MACD(asset_class,security,start,end).to_json(orient='split')
-#         return HttpResponse(result)
-#     return HttpResponse("Do not have this strategy")
+def backtest(request):
+    asset_class = request.GET.get('asset_class')
+    st = request.GET.get('start').split('-')
+    ed = request.GET.get('end').split('-')
+    start = datetime(int(st[0]),int(st[1]),int(st[2]))
+    end = datetime(int(ed[0]),int(ed[1]),int(ed[2]))
+    security = request.GET.get('security')
+    strategy = request.GET.get('strategy')
+    if strategy == "KAMA" :
+        result = KAMA(asset_class,security,start,end).to_json(orient='split')
+        result = '{"asset_class":'+asset_class+',"security:"'+security+',"result":'+result+'}'
+        return HttpResponse(result)
+    elif strategy == "MACD" :
+        result = MACD(asset_class,security,start,end).to_json(orient='split')
+        return HttpResponse(result)
+    return HttpResponse("Do not have this strategy")
 
 def LoadAllDataFrames(asset_class,security, start, end):
-    logging.info('LoadAllDataFrames() method running')
+    logging.info('LoadAllDataFrames() method running  time: '+str(time.asctime( time.localtime(time.time()) )))
     engine = create_engine(Constants.SQLCONNECT)
     sql = Constants.getSQL(asset_class,security, start, end)
     data = pd.read_sql(sql, con=engine)
@@ -68,7 +69,7 @@ def LoadAllDataFrames(asset_class,security, start, end):
 
 
 def KAMA(asset_class,security, start, end):
-    logging.info('KAMA() method running')
+    logging.info('KAMA() method running  time: '+str(time.asctime( time.localtime(time.time()) )))
     df = LoadAllDataFrames(asset_class,security, start, end)
     df['Change'] = np.abs(df[TableColumn.CLOSE] - df[TableColumn.CLOSE].shift(10))
     df['Volatility'] = np.abs(df[TableColumn.CLOSE] - df[TableColumn.CLOSE].shift(1)).rolling(10).sum()
@@ -86,7 +87,7 @@ def KAMA(asset_class,security, start, end):
     # return df[TableColumn.RESULTCOLS].cumsum().apply(np.exp)
 
 def cal_macd(data,short_,long_,m):
-    logging.info('cal_macd() method running')
+    logging.info('cal_macd() method running time: '+str(time.asctime( time.localtime(time.time()) )))
     data['diff']=data['close'].ewm(adjust=False,alpha=2/(short_+1),ignore_na=True).mean()-\
                 data['close'].ewm(adjust=False,alpha=2/(long_+1),ignore_na=True).mean()
     
@@ -99,7 +100,7 @@ def cal_macd(data,short_,long_,m):
 
 def MACD(asset_class,security, start, end):
     response = Response()
-    logging.info('MACD() method running')
+    logging.info('MACD() method running time: '+str(time.asctime( time.localtime(time.time()) )))
     df = LoadAllDataFrames(asset_class,security, start, end)
     df = df.sort_index(ascending=True)
     ### MACD Strategy 
@@ -121,7 +122,7 @@ def MACD(asset_class,security, start, end):
     
     ###Strategy
 def dual_thrust(data,K1,K2):
-    logging.info('dual_thrust() method running')
+    logging.info('dual_thrust() method running  time: '+str(time.asctime( time.localtime(time.time()) )))
     HH = max(data['<high>'])
     LC = min(data['<close>'])
     HC = max(data['<close>'])

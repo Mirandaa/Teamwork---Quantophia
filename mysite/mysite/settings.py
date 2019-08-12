@@ -37,18 +37,50 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',  # 默认
+    'django.contrib.sessions.middleware.SessionMiddleware',  # 默认
+
+    'corsheaders.middleware.CorsMiddleware',  # 默认
+    # 注意顺序，即在上一个的下面
+    'django.middleware.common.CommonMiddleware',  # 新增 ✔
+
+    'django.middleware.csrf.CsrfViewMiddleware',  # 默认
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # 默认
+    'django.contrib.messages.middleware.MessageMiddleware',  # 默认
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # 默认
+    'django.middleware.common.CommonMiddleware',  # 默认
 ]
+# 跨域增加忽略
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -119,3 +151,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
