@@ -1,5 +1,31 @@
 # Teamwork
-team work - 16
+Directories:
+
+>  my-project : front end
+>
+>  my-site: back end
+
+#### Run Vue
+
+```
+# go to my-project directory
+cd /Teamwork/my-project
+
+# run your vue project
+npm run dev
+```
+
+#### Run Django Server
+
+```
+# go to mysite directory
+cd /Teamwork/mysite (pycharm project terminal defaults this path)
+
+# run your server
+python manage.py runserver 0.0.0.0:8899
+```
+
+<br>
 
 ### 0. Standards
 
@@ -56,6 +82,10 @@ Return code:
 ### 2. Submit configuration
 
 > Description: After user's selection overall, submit data to back end
+>
+> 暂定：传递参数信息给后台，返回画图需要的数据:
+>
+> http://149.28.47.146:8899/api/configuration
 
 API:
 
@@ -85,26 +115,5 @@ Return code:
 200 - OK
 ```
 
-### 
-
-传递参数信息给后台，返回画图需要的数据:
-
-http://149.28.47.146:8899/api/configuration
-
-
-> my-project : front end
->
-> my-site: back end
-
-### Run Vue.js 
-
-```
-# go to my-project directory
-cd my-project
-
-# run your vue project
-npm run dev
-```
-
-
+###
 
