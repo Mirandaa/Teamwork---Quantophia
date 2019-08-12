@@ -28,12 +28,9 @@ def buildAssetClass(request):
         df = pd.read_json(Constants.JSONPATH+asset_class+".json")
         securitylist = df[Constants.SECURITY]
         securitylist = list(securitylist.map(lambda x: {"value": x, "label": x}))
-
-
-        # response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(securitylist)}
-        response.data = Constants.testMsg
-        print(response)
-        return HttpResponse({response:''})
+        response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(securitylist)}
+        # logging.info("$JSON"+str(response))
+        return HttpResponse("$JSON"+str(response))
     except:
         response.errorCode = -1
         response.errorMsg = Constants.ERRORMSG
