@@ -26,8 +26,10 @@ def buildAssetClass(request):
         asset_class = request.GET.get(Constants.ASSET_CLASS)
 
         df = pd.read_json(Constants.JSONPATH+asset_class+".json")
+        securitylist = df[Constants.SECURITY]
+        securitylist = list(securitylist.map(lambda x: {"value": x, "label": x}))
 
-        response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(df[Constants.SECURITY])}
+        response.data = {Constants.ASSET_CLASS:asset_class, Constants.SECURITY: list(securitylist)}
         return HttpResponse(response)
     except:
         response.errorCode = -1
@@ -55,7 +57,6 @@ def buildAssetClass(request):
 
 def LoadAllDataFrames(asset_class,security, start, end):
     logging.info('LoadAllDataFrames() method running')
-    if()
     engine = create_engine(Constants.SQLCONNECT)
     sql = Constants.getSQL(asset_class,security, start, end)
     data = pd.read_sql(sql, con=engine)
