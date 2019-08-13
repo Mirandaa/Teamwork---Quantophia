@@ -92,7 +92,7 @@ Return code:
 
 > Description: After user's selection overall, submit data to back end
 >
-> 暂定：传递参数信息给后台，返回画图需要的数据
+> 传递参数信息给后台，返回画图需要的数据
 >
 
 API:
@@ -129,7 +129,35 @@ Return data:
 
 ```json
 {
-  pending
+  "date": ["2017-01-01", "2017-01-02", ..., "2017-06-01"],
+  "market": ["10", "20", "30"],
+  "security": [
+    {
+      "secName": "IBM",
+      "strategy": [
+        {
+          "stratName": "MACD",
+          "regime": ["20", "30", "40"],
+          "Yield": "12.03%",
+          "Benchmark": "10.05%",
+          "Sharpe Ratio": "0.089",
+          "Alpha": "0.058",
+          "Beta": "1.029",
+          "Max Drawdown": "2.390",
+      	},
+        {
+          "stratName": "MACD",
+          "regime": ["20", "30", "40"],
+          "Yield": "12.03%",
+          "Benchmark": "10.05%",
+          "Sharpe Ratio": "0.089",
+          "Alpha": "0.058",
+          "Beta": "1.029",
+          "Max Drawdown": "2.390",
+        }
+      ]
+  	}
+  ]
 }
 ```
 
