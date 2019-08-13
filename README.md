@@ -98,7 +98,7 @@ Return code:
 API:
 
 ```son
-POST   http://192.168.43.141:8899/api/submitConfig
+POST   http://192.168.43.141:8899/api/getResult
 ```
 
 Parameter example:

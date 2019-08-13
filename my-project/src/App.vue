@@ -359,7 +359,6 @@ export default {
         }
       })
       .then(function (response) {
-        console.log(response.data.data.security)
         that.security = response.data.data.security
       }).catch(function (error) {
         console.log(error)
@@ -368,10 +367,10 @@ export default {
 
     submitData() {
       // submit all data to backend
-      console.log('click submit button and post:' + '/submitConfig')
+      console.log('click submit button and post:' + '/getResult')
       this.axios({
         method: 'post',
-        url: '/submitConfig',
+        url: '/getResult',
         data: {
           startTime: moment(this.startTime).format('YYYY-MM-DD'),
           endTime: moment(this.endTime).format('YYYY-MM-DD'),
