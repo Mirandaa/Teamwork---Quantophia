@@ -388,7 +388,7 @@ export default {
         }
       })
       .then(function (response) {
-        that.tableReturnData = response.data
+        that.tableReturnData = response.data.data.securityData
         console.log(response.data)
       }).catch(function (error) {
         console.log(error)
