@@ -130,11 +130,11 @@ Return data:
 ```json
 {
   "date": ["2017-01-01", "2017-01-02", ..., "2017-06-01"],
-  "market": ["10", "20", "30"],
-  "security": [
+  "marketData": ["10", "20", "30"],
+  "securityData": [
     {
       "secName": "IBM",
-      "strategy": [
+      "calcResult": [
         {
           "stratName": "MACD",
           "regime": ["20", "30", "40"],
@@ -143,17 +143,17 @@ Return data:
           "Sharpe Ratio": "0.089",
           "Alpha": "0.058",
           "Beta": "1.029",
-          "Max Drawdown": "2.390",
+          "Max Drawdown": "2.390"
       	},
         {
-          "stratName": "MACD",
+          "stratName": "KDJ",
           "regime": ["20", "30", "40"],
           "Yield": "12.03%",
           "Benchmark": "10.05%",
           "Sharpe Ratio": "0.089",
           "Alpha": "0.058",
           "Beta": "1.029",
-          "Max Drawdown": "2.390",
+          "Max Drawdown": "2.390"
         }
       ]
   	}
