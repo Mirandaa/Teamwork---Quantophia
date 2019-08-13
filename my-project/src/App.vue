@@ -96,7 +96,7 @@
                           <Button type="error" size="small" @click="removeStrategy(index)">Delete</Button>
                         </template>
                       </Table>
-                      <Button type="primary" class="submit-button" @click="submitData" :disabled="!startTime || !endTime || !modelFrequency || tableProductData.length == 0 || tableStrategyData.length == 0">Submit</Button>
+                      <Button type="primary" class="submit-button" @click="submitData()" :disabled="!startTime || !endTime || !modelFrequency || tableProductData.length == 0 || tableStrategyData.length == 0">Submit</Button>
                     </div>
                 </Card>
             </Content>
@@ -109,34 +109,11 @@
 
                 <Card>
                     <div class="config-selection">
-                      <Row>
-                        <h6>MACD</h6>
-                        Yield
-                        <Divider type="vertical" />
-                        Benchmark
-                        <Divider type="vertical" />
-                        Sharpe Ratio
-                        <Divider type="vertical" />
-                        Alpha
-                        <Divider type="vertical" />
-                        Beta
-                        <Divider type="vertical" />
-                        Max Drawdown
-                      </Row>
-
-                      <Row>
-                        15.11%
-                        <Divider type="vertical" />
-                        12.87%
-                        <Divider type="vertical" />
-                        0.303
-                        <Divider type="vertical" />
-                        0.026
-                        <Divider type="vertical" />
-                        0.956
-                        <Divider type="vertical" />
-                        28.05%
-                      </Row>
+                      <Table :columns="resultDataColumns" :data="tableReturnData" class="data-table">
+                        <template slot-scope="{ row }" slot="yield">
+                          <strong>{{ row.yield }}</strong>
+                        </template>
+                      </Table>
 
                     </div>
                     <div class="chart">
@@ -157,6 +134,7 @@
 <script>
 // import Schart from 'vue-schart';
 import LineChart from '@/components/LineChart'
+let moment = require("moment")
 
 export default {
   data() {
@@ -242,10 +220,49 @@ export default {
           align: 'center'
         }
       ],
+      resultDataColumns: [
+        {
+          title: 'AssetClass',
+          key: 'assetClass'
+        },
+        {
+          title: 'Security',
+          key: 'security'
+        },
+        {
+          title: 'Strategy',
+          key: 'strategy'
+        },
+        {
+          title: 'Yield',
+          key: 'yield'
+        },
+        {
+          title: 'Benchmark',
+          key: 'benchmark'
+        },
+        {
+          title: 'Sharpe Ratio',
+          key: 'sharpeRatio'
+        },
+        {
+          title: 'Alpha',
+          key: 'alpha'
+        },
+        {
+          title: 'Beta',
+          key: 'beta'
+        },
+        {
+          title: 'Max Drawdown',
+          key: 'maxDrawdown'
+        }
+      ],
       tableProductData: [],
       securityList: [],
       tableStrategyData: [],
-      strategyList: []
+      strategyList: [],
+      tableReturnData: []
     }
   },
   mounted() {
@@ -347,44 +364,34 @@ export default {
       }).catch(function (error) {
         console.log(error)
       })
-
-      // if (this.modelProduct == 'NASDAQ') {
-        // this.security = [
-        // {
-        //   value: 'IBM',
-        //   label: 'IBM'
-        // },
-        // {
-        //   value: 'GBPUSD',
-        //   label: 'GBPUSD'
-        // }]
-      // }
-      // else {
-      //   this.security = []
-      // } 
     },
 
     submitData() {
       // submit all data to backend
-      console.log('click submit button:' + '/config')
+      console.log('click submit button and post:' + '/submitConfig')
       this.axios({
         method: 'post',
-        url: '/config',
+        url: '/submitConfig',
         data: {
-          startTime,
-          endTime,
-          modelFrequency,
-          tableProductData,
-          tableStrategyData
+          startTime: moment(this.startTime).format('YYYY-MM-DD'),
+          endTime: moment(this.endTime).format('YYYY-MM-DD'),
+          modelFrequency: this.modelFrequency,
+          tableProductData: this.tableProductData,
+          tableStrategyData: this.tableStrategyData
         }
+      })
+      .then(function (response) {
+        console.log(response)
+      }).catch(function (error) {
+        console.log(error)
       })
     }
   },
+
   components: {
     'linechart': LineChart
   }
 }
-
 </script>
 
 <style>

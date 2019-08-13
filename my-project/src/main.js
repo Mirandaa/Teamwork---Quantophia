@@ -6,6 +6,7 @@ import iView from 'iview'; // 引入iview UI组件
 import 'iview/dist/styles/iview.css';
 import router from './router' // 引入一段路由配置
 import axios from 'axios'
+import moment from 'moment'
 
 Vue.use(iView)
 Vue.prototype.axios = axios //Vue.prototype.名字(这个名字随便起，一般是叫$http或者$https，那么一看就明白，你这是在往后端发送请求)
