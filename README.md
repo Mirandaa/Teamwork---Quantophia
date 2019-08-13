@@ -129,11 +129,11 @@ Return data:
 
 ```json
 {
-  "date": ["2017-01-01", "2017-01-02", ..., "2017-06-01"],
-  "marketData": ["10", "20", "30"],
   "securityData": [
     {
       "secName": "IBM",
+      "date": ["2017-01-01", "2017-01-02", ..., "2017-06-01"],
+      "marketData": ["10", "20", "30"],
       "calcResult": [
         {
           "stratName": "MACD",
