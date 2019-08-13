@@ -1,13 +1,11 @@
 <template>
 	<div>
-		<h3>{{ chartData[0].secName }}</h3>
 		<Table :columns="resultDataColumns" :data=getCalcuData() class="data-table">
 			<template slot-scope="{ row }" slot="strategy">
 				<strong>{{ row.strategy }}</strong>
 			</template>
 		</Table>
-		<p>{{ chartData[0].calcResult[0].Benchmark }}</p>
-		<br>
+		<!-- <p>{{ chartData[0].calcResult[0].Benchmark }}</p> -->
 		<line-chart :data="testData" :options="testOptions"/>
 
 	</div>
@@ -62,35 +60,40 @@ export default {
 	      labels: this.getDate(),
 	      // datasets 是个数组 表示线性走势及对走势线的配置
 	      datasets: this.getDataSets()
-	      // datasets: [
-	      //   {
-	      //     label: this.getLabel(),
-	      //     backgroundColor: this.getTransColor(),
-	      //     borderColor: 'rgba(225,103,110,1)',
-	      //     pointBorderColor: this.getTransColor(),
-	      //     data: this.getRegimeData()
-	      //   },
-	      //   {
-	      //     label: 'Market',
-	      //     backgroundColor: this.getTransColor(),
-	      //     borderColor: 'rgba(5,203,225,1)',
-	      //     pointBorderColor: this.getTransColor(),
-	      //     data: this.getMarketData()
-	      //   },
-	      //   {
-	      //     label: '',
-	      //     backgroundColor: 'rgba(65,105,225,0)',
-	      //     borderColor: 'rgba(65,105,225,1)',
-	      //     pointBorderColor: 'rgba(65,105,225,0)',
-	      //     data: [],
-
-	      //   }
-	      // ]
 	    },
 
 	    testOptions: {
-	      responsive: true, 
-	      maintainAspectRatio: false
+	      responsive: true,
+	      title: {
+					display: true,
+					text: this.getSecName()
+				},
+	      maintainAspectRatio: false,
+	      tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'index',
+					intersect: false
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Profit'
+						}
+					}]
+				}
 	    }
 		}
 	},
@@ -108,6 +111,10 @@ export default {
 		getDate() {
 			this.chartData = this.getData()
 			return this.chartData[0].date
+		},
+
+		getSecName() {
+			return this.chartData[0].secName
 		},
 
 		getLabel(i) {
@@ -174,7 +181,9 @@ export default {
 		getDataSets() {
 			var dataset = []
 			dataset.push({label: 'Market', 
-					backgroundColor: this.getTransColor(), 
+					fill: false,
+					pointRadius: 0,
+					backgroundColor: 'rgba(255,215,0,1)', 
 					borderColor: 'rgba(255,215,0,1)', 
 					pointBorderColor: this.getTransColor(), 
 					data: this.getMarketData()
@@ -182,7 +191,9 @@ export default {
 			for (var i = 0; i < this.chartData[0].calcResult.length; i++) {
 				dataset.push({
 					label: this.getLabel(i), 
-					backgroundColor: this.getTransColor(), 
+					fill: false,
+					pointRadius: 0,
+					backgroundColor: this.getBorderColor(i), 
 					borderColor: this.getBorderColor(i), 
 					pointBorderColor: this.getTransColor(), 
 					data: this.getRegimeData(i)
