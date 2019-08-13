@@ -1,12 +1,11 @@
 <template>
   <div id="app">
-    <!-- <router-view/> -->
 
     <Menu mode="horizontal">
-      <div class="title">
+      <div @click="backhome()" class="title">
         <img src="./assets/logo.svg" class="logo">
       </div>
-      <div class="title">Back Testing Tool</div>
+      <div @click="backhome()" class="title">Back Testing Tool</div>
     </Menu>
 
     <div class="layout">
@@ -109,36 +108,35 @@
 
                 <Card>
                     <div class="config-selection">
-                      <Table :columns="resultDataColumns" :data="tableReturnData" class="data-table">
-                        <template slot-scope="{ row }" slot="yield">
-                          <strong>{{ row.yield }}</strong>
-                        </template>
-                      </Table>
 
-                    </div>
-                    <div class="chart">
-                      <h2>Line chart</h2>
-                      <linechart/>
-                    </div>
 
+                      <router-view v-if="isRouterAlive"/>
+                    </div>
                 </Card>
             </Content>
-            <Footer class="layout-footer-center">2019 &copy; TalkingData</Footer>
+            <Footer class="layout-footer-center">2019 &copy; belongs to original authors<br>
+              <div>
+              Programmed By : Maggie | Davis | Sue | Sophy
+              </div>
+            </Footer>
         </Layout>
     </div>
-
-    <!-- <router-view/> -->
   </div>
 </template>
 
 <script>
-// import Schart from 'vue-schart';
-import LineChart from '@/components/LineChart'
 let moment = require("moment")
 
 export default {
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
+
   data() {
     return {
+      isRouterAlive: true,
       startTime: '',
       endTime: '',
       startTimeOption: {},
@@ -220,49 +218,58 @@ export default {
           align: 'center'
         }
       ],
-      resultDataColumns: [
-        {
-          title: 'AssetClass',
-          key: 'assetClass'
-        },
-        {
-          title: 'Security',
-          key: 'security'
-        },
-        {
-          title: 'Strategy',
-          key: 'strategy'
-        },
-        {
-          title: 'Yield',
-          key: 'yield'
-        },
-        {
-          title: 'Benchmark',
-          key: 'benchmark'
-        },
-        {
-          title: 'Sharpe Ratio',
-          key: 'sharpeRatio'
-        },
-        {
-          title: 'Alpha',
-          key: 'alpha'
-        },
-        {
-          title: 'Beta',
-          key: 'beta'
-        },
-        {
-          title: 'Max Drawdown',
-          key: 'maxDrawdown'
-        }
-      ],
+      
       tableProductData: [],
       securityList: [],
       tableStrategyData: [],
       strategyList: [],
-      tableReturnData: []
+      tableReturnData: [],
+      //  Test return to Chart.vue of chart data
+      testChartData: [
+        {
+          secName: "IBM",
+          date: ['2009-12-31', '2010-01-04', '2010-01-05', '2010-01-06',
+                 '2010-01-07', '2010-01-08', '2010-01-11', '2010-01-12',
+                 '2010-01-13', '2010-01-14', '2013-01-11', '2013-01-14', 
+                 '2013-01-15', '2013-01-16', '2013-01-17', '2013-01-18', 
+                 '2013-01-22', '2013-01-23', '2013-01-24', '2013-01-25'],
+          marketData: [22.625179290771484, 22.3319034576416, 22.174535751342773, 22.045780181884766, 
+          22.06723976135254, 22.21030044555664, 21.924177169799805, 22.017168045043945, 
+          22.346208572387695, 22.432044982910156, 22.052932739257812, 21.93848419189453, 
+          22.253219604492188, 21.709585189819336, 21.20886993408203, 21.101573944091797, 
+          20.951358795166016, 21.008583068847656, 20.865522384643555, 20.97281837463379],
+          calcResult: [
+            {
+              stratName: "MACD",
+              regime: [22.389127731323242, 22.145923614501953, 22.06723976135254, 22.038625717163086, 
+          22.03147315979004, 22.045780181884766, 21.781116485595703, 21.952789306640625, 
+          22.281831741333008, 21.766809463500977, 22.03147315979004, 21.90987205505371, 
+          21.831188201904297, 20.865522384643555, 21.06580924987793, 20.951358795166016, 
+          20.865522384643555, 20.522174835205078, 20.050071716308594, 20.836910247802734],
+              Yield: "12.03%",
+              Benchmark: "10.05%",
+              SharpeRatio: "0.089",
+              Alpha: "0.058",
+              Beta: "1.029",
+              MaxDrawdown: "2.390"
+           },
+            {
+              stratName: "KDJ",
+              regime: [22.45350456237793, 22.324748992919922, 22.06723976135254, 22.017168045043945, 
+            21.917024612426758, 22.08869743347168, 21.859800338745117, 21.795421600341797, 
+            21.881258010864258, 22.3319034576416, 21.716737747192383, 21.838340759277344, 
+            22.174535751342773, 21.709585189819336, 21.044349670410156, 21.008583068847656, 
+            20.886981964111328, 20.836910247802734, 20.69384765625, 20.1430606842041],
+              Yield: "14.13%",
+              Benchmark: "9.09%",
+              SharpeRatio: "0.123",
+              Alpha: "1.238",
+              Beta: "0.893",
+              MaxDrawdown: "1.888"
+            }
+         ]
+       }
+     ]
     }
   },
   mounted() {
@@ -367,6 +374,7 @@ export default {
 
     submitData() {
       // submit all data to backend
+      let that = this
       console.log('click submit button and post:' + '/getResult')
       this.axios({
         method: 'post',
@@ -380,15 +388,25 @@ export default {
         }
       })
       .then(function (response) {
-        console.log(response)
+        that.tableReturnData = response.data
+        console.log(response.data)
       }).catch(function (error) {
         console.log(error)
       })
-    }
-  },
+      // this.$router.push({ path: '/Chart', query: { allData: this.tableReturnData}})
+      this.$router.push({ path: '/Chart', query: { allData: this.testChartData}})
+    },
 
-  components: {
-    'linechart': LineChart
+    backhome() {
+      this.$router.push('/')
+    },
+
+    reload() {
+      this.isRouterAlive = false
+      this.$nextTick(function() {
+        this.isRouterAlive = true
+      })
+    }
   }
 }
 </script>
@@ -411,6 +429,7 @@ export default {
   float: left;
   margin-left: 20px;
   font-size: 24px;
+  cursor: pointer;
 }
 
 .logo{
