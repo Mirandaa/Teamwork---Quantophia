@@ -11,40 +11,46 @@
     <div class="layout">
         <Layout class="layout-center">
             <Content class="content-center">
-                <Breadcrumb :style="{margin: '20px 0'}">
+                <Breadcrumb class="card-title">
                     <BreadcrumbItem>Back Testing Configurations</BreadcrumbItem>
                 </Breadcrumb>
 
                 <Card>
-                    <div class="config-selection">
-                      <img src="./assets/time.svg" alt="">
+                  <div style="overflow: hidden;">
+                    <div class="config-selection1">
+                      <Icon type="md-time" size="24"/>
                       <div class="selection-title">
                         Select Time
                       </div>
                       <Row class="picker">
                         <div class="picker-left">
-                          From:
+                          Start:
                         </div>
                         <Col span="12" class="picker-button">
-                          <DatePicker type="date" v-model="startTime" placeholder="Select start date" :options="startTimeOption" @on-change="onStartTimeChange" class="picker-style"/>
+                          <DatePicker transfer="true" type="date" placement="top-start" v-model="startTime" placeholder="Start date" :options="startTimeOption" @on-change="onStartTimeChange" class="picker-style"/>
                         </Col>
-                        <div class="picker-left-to">
-                          To:
-                        </div>
-                        <Col span="12" class="picker-button">
-                          <DatePicker type="date" v-model="endTime" placeholder="Select end date" :options="endTimeOption" @on-change="onEndTimeChange" class="picker-style"/>
-                        </Col>
-                        <div class="picker-left2">
-                          Frequency:
-                        </div>
-                        <Select class="picker-style picker-button " v-model="modelFrequency" clearable placeholder="Select frequency">
-                          <Option v-for="item in frequencies" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
+                        <RadioGroup v-model="interval" class="picker-left2">
+                          <Radio label='30'>
+                              <span>1M</span>
+                          </Radio>
+                          <Radio label='90'>
+                              <span>3M</span>
+                          </Radio>
+                          <Radio label='180'>
+                              <span>6M</span>
+                          </Radio>
+                          <Radio label='270'>
+                              <span>9M</span>
+                          </Radio>
+                          <Radio label='360'>
+                              <span>12M</span>
+                          </Radio>
+                        </RadioGroup>
                       </Row>
                     </div>
 
-                    <div class="config-selection">
-                      <img src="./assets/product.svg" alt="">
+                    <div class="config-selection2">
+                      <Icon type="md-done-all" size="24"/>
                       <div class="selection-title">
                         Select 1/n financial product(s)
                       </div>
@@ -52,18 +58,40 @@
                         <div class="picker-left">
                           Asset Class:
                         </div>
-                        <Select class="picker-button" v-model="modelProduct" clearable placeholder="Select asset class" @on-change="getSecurityData()">
+                        <Select transfer="true" class="picker-button" placement="top-start" v-model="modelProduct" clearable filterable placeholder="Asset class" @on-change="getSecurityData()">
                           <Option v-for="item in assetClass" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <div class="picker-left2">
                           Security:
                         </div>
-                        <Select filterable class="picker-button" v-model="modelSecurity" clearable placeholder="Select security">
+                        <Select filterable class="picker-button" placement="top-start" transfer="true" v-model="modelSecurity" clearable placeholder="Security">
                           <Option v-for="item in security" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <Button type="primary" ghost class="add-button" @click="addProduct" :disabled="!modelProduct || !modelSecurity">Add</Button>
                       </Row>
-                      <Table stripe border :columns="productColumns" :data="tableProductData" class="data-table">
+
+                    </div>
+
+                    <div class="config-selection3">
+                      <Row class="picker-strategy">
+                        <div class="check-strategy">
+                          <Checkbox
+                          :indeterminate="indeterminate"
+                          :value="checkAll"
+                          @click.prevent.native="handleCheckAll" class="check-box">Select all strategies</Checkbox>
+                        </div>
+                        <CheckboxGroup v-model="checkAllGroup" @on-change="checkAllGroupChange">
+                          <Checkbox class="check-box-label" label="MACD"></Checkbox>
+                          <Checkbox class="check-box-label" label="KDJ"></Checkbox>
+                          <Checkbox class="check-box-label" label="KAMA"></Checkbox>
+                          <Checkbox class="check-box-label" label="LR"></Checkbox>
+                          <Checkbox class="check-box-label" label="SMA"></Checkbox>
+                          <Checkbox class="check-box-label" label="DT"></Checkbox>
+                        </CheckboxGroup>
+                      </Row>
+                    </div>
+
+                      <Table stripe border size="small" no-data-text="No data" :columns="productColumns" :data="tableProductData" class="data-table">
                         <template slot-scope="{ row }" slot="assetClass">
                           <strong>{{ row.assetClass }}</strong>
                         </template>
@@ -71,49 +99,24 @@
                           <Button type="error" size="small" @click="removeProduct(index)">Delete</Button>
                         </template>
                       </Table>
+                    
+                    <div class="submit-button-line">
+                      <Button type="primary" class="submit-button" @click="submitData()" :disabled="!startTime || !interval || tableProductData.length == 0 || checkAllGroup.length == 0">Submit</Button>
                     </div>
 
+                    <Breadcrumb class="result-title">
+                      <Icon type="md-pulse" size="24" class="result-icon"/>
+                      <BreadcrumbItem>Result Overview</BreadcrumbItem>
+                    </Breadcrumb>
+
                     <div class="config-selection">
-                      <img src="./assets/strategy.svg" alt="" class="strategy">
-                      <div class="selection-title">
-                        Select 1/n strategy(s)
-                      </div>
-                      <Row class="picker">
-                        <div class="picker-left">
-                          Strategy:
-                        </div>
-                        <Select class="picker-button" v-model="modelStrategy" clearable placeholder="Select strategy">
-                          <Option v-for="item in strategy" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
-                        <Button type="primary" ghost class="add-button" @click="addStrategy" :disabled="!modelStrategy">Add</Button>
-                      </Row>
-                      <Table stripe border :columns="strategyColumns" :data="tableStrategyData" class="data-table">
-                        <template slot-scope="{ row }" slot="strategy">
-                          <strong>{{ row.strategy }}</strong>
-                        </template>
-                        <template slot-scope=" {row, index} " slot="action">
-                          <Button type="error" size="small" @click="removeStrategy(index)">Delete</Button>
-                        </template>
-                      </Table>
-                      <Button type="primary" class="submit-button" @click="submitData()" :disabled="!startTime || !endTime || !modelFrequency || tableProductData.length == 0 || tableStrategyData.length == 0">Submit</Button>
-                    </div>
-                </Card>
-            </Content>
-
-            <!-- 这里是提交设置之后生成图表-->
-            <Content class="content-center">
-                <Breadcrumb :style="{margin: '20px 0'}">
-                    <BreadcrumbItem>Result Overview</BreadcrumbItem>
-                </Breadcrumb>
-
-                <Card>
-                    <div class="config-selection">
-
-
                       <router-view v-if="isRouterAlive"/>
                     </div>
+                  </div>
+
                 </Card>
             </Content>
+
             <Footer class="layout-footer-center">2019 &copy; belongs to original authors<br>
               <div>
               Programmed By : Maggie | Davis | Sue | Sophy
@@ -137,20 +140,11 @@ export default {
   data() {
     return {
       isRouterAlive: true,
-      startTime: '',
+      startTime: '2011-01-01',
       endTime: '',
       startTimeOption: {},
       endTimeOption: {},
-      frequencies: [
-        {
-          value: 'day',
-          label: 'day'
-        },
-        {
-          value: 'minute',
-          label: 'minute'
-        }
-      ],
+      interval: '30',
       assetClass: [
         {
           value: 'FOREX',
@@ -170,28 +164,11 @@ export default {
         }
       ],
       security: [],
-      securityItem: {
-        value: '',
-        label: ''
-      },
-      strategy: [
-        {
-          value: 'MACD',
-          label: 'MACD'
-        },
-        {
-          value: 'KAMA',
-          label: 'KAMA'
-        },
-        {
-          value: 'KDJ',
-          label: 'KDJ'
-        }
-      ],
-      modelFrequency: '',
+      indeterminate: false,
+      checkAll: true,
+      checkAllGroup: ['MACD', 'KDJ', 'KAMA', 'LR', 'SMA', 'DT'],
       modelProduct: '',
       modelSecurity: '',
-      modelStrategy: '',
       productColumns: [
         {
           title: 'Asset Class',
@@ -207,25 +184,12 @@ export default {
           align: 'center'
         }
       ],
-      strategyColumns: [
-        {
-          title: 'Trading Strategy',
-          key: 'strategy'
-        },
-        {
-          title: 'Action',
-          slot: 'action',
-          align: 'center'
-        }
-      ],
-      
       tableProductData: [],
       securityList: [],
       tableStrategyData: [],
-      strategyList: [],
       tableReturnData: [],
       //  Test return to Chart.vue of chart data
-      testChartData: [
+      testChartData1: [
         {
           secName: "GBPUSD",
           date: [
@@ -472,7 +436,145 @@ export default {
               }
           ]
         }
-     ]
+      ],
+
+      test1toN: [
+        {
+          secName: "AEDAUD",
+          date: [
+                  "2011-01-03",
+                  "2011-01-04",
+                  "2011-01-05",
+                  "2011-01-06",
+                  "2011-01-07",
+                  "2011-01-08",
+                  "2011-01-10",
+                  "2011-01-11",
+                  "2011-01-12",
+                  "2011-01-13",
+                  "2011-01-14",
+                  "2011-01-15",
+                  "2011-01-17",
+                  "2011-01-18",
+                  "2011-01-19",
+                  "2011-01-20",
+                  "2011-01-21",
+                  "2011-01-22",
+                  "2011-01-24",
+                  "2011-01-25",
+                  "2011-01-26",
+                  "2011-01-27",
+                  "2011-01-28",
+                  "2011-01-29",
+                  "2011-01-31"
+          ],
+          marketData: [
+                  1.0,
+                  1.011989509179468,
+                  1.0206069689022106,
+                  1.0228550018733609,
+                  1.026227051330086,
+                  1.0236043461970774,
+                  1.026227051330086,
+                  1.0348445110528288,
+                  1.0236043461970776,
+                  1.0232296740352191,
+                  1.026227051330086,
+                  1.0310977894342448,
+                  1.029224428624953,
+                  1.0247283626826527,
+                  1.019108280254777,
+                  1.0337204945672533,
+                  1.03222180591982,
+                  1.0299737729486695,
+                  1.0228550018733606,
+                  1.0228550018733606,
+                  1.0236043461970774,
+                  1.025103034844511,
+                  1.0284750843012365,
+                  1.0277257399775197,
+                  1.0266017234919447
+          ],
+          calcResult: [
+            {
+              stratName: "KDJ",
+              regime: [
+                    1.0,
+                    0.9881525360977416,
+                    0.9798091042584435,
+                    0.9776556776556775,
+                    0.9744432274552758,
+                    0.9769399707174232,
+                    0.9744432274552759,
+                    0.9663287472845764,
+                    0.9769399707174231,
+                    0.9765823792200888,
+                    0.9765823792200888,
+                    0.9765823792200888,
+                    0.9783599226842681,
+                    0.9740860533460042,
+                    0.9740860533460042,
+                    0.9740860533460042,
+                    0.9740860533460042,
+                    0.9762121051175853,
+                    0.9762121051175853,
+                    0.9762121051175853,
+                    0.9762121051175853,
+                    0.9762121051175853,
+                    0.9762121051175853,
+                    0.976923889372137,
+                    0.976923889372137
+              ],
+              Performance: "97.69%",
+              Market: "-4.97%",
+              Diff: "102.66%",
+              AnnualizedReturn: "-0.27%",
+              MaxDrawdown: -0.034,
+              Alpha: -0.018,
+              Beta: -0.756,
+              SharpeRatio: -4.392
+            },
+            {
+              stratName: "MACD",
+              regime: [
+                  1.0,
+                  1.0,
+                  0.9915565345080763,
+                  0.9893772893772893,
+                  0.9861263234757212,
+                  0.9886530014641289,
+                  0.9861263234757213,
+                  0.9779145546705286,
+                  0.9886530014641288,
+                  0.9886530014641288,
+                  0.9886530014641288,
+                  0.9839827656287241,
+                  0.9857737790354019,
+                  0.9900989290713889,
+                  0.9900989290713889,
+                  1.0042952004808683,
+                  1.005753342332746,
+                  1.0079485115048075,
+                  1.0079485115048075,
+                  1.0079485115048075,
+                  1.0086869353227597,
+                  1.0101637829586643,
+                  1.0134866901394495,
+                  1.012748266321497,
+                  1.0116406305945689
+              ],
+              Performance: "101.16%",
+              Market: "-1.5%",
+              Diff: "102.66%",
+              AnnualizedReturn: "0.14%",
+              MaxDrawdown: -0.022,
+              Alpha: -0.003,
+              Beta: -0.088,
+              SharpeRatio: -0.54
+            }
+          ]
+        }
+      ]
     }
   },
   mounted() {
@@ -507,6 +609,34 @@ export default {
       }
     },
 
+    handleCheckAll () {
+      if (this.indeterminate) {
+        this.checkAll = false
+      } else {
+        this.checkAll = !this.checkAll
+      }
+      this.indeterminate = false
+
+      if (this.checkAll) {
+        this.checkAllGroup = ['MACD', 'KDJ', 'KAMA', 'LR', 'SMA', 'DT']
+      } else {
+        this.checkAllGroup = []
+      }
+    },
+
+    checkAllGroupChange (data) {
+      if (data.length === 6) {
+        this.indeterminate = false
+        this.checkAll = true
+      } else if (data.length > 0) {
+        this.indeterminate = true
+        this.checkAll = false
+      } else {
+        this.indeterminate = false
+        this.checkAll = false
+      }
+    },
+
     addProduct() {
       var flag = true
 
@@ -532,30 +662,6 @@ export default {
       this.securityList.splice(index, 1)
     },
 
-    addStrategy() {
-      var flag = true
-
-      for (var i = 0; i < this.strategyList.length; i++) {
-        if (this.modelStrategy == this.strategyList[i]) {
-          alert('Already add this strategy!\nPlease choose another one.')
-          this.modelStrategy = ''
-          flag = false
-        }
-      }
-
-      if (flag) {
-        this.tableStrategyData.push({strategy: this.modelStrategy})
-        this.strategyList.push(this.modelStrategy)
-        console.log(this.tableStrategyData)
-        this.modelStrategy = ''
-      }
-    },
-
-    removeStrategy(index) {
-      this.tableStrategyData.splice(index, 1)
-      this.strategyList.splice(index, 1)
-    },
-
     getSecurityData() {
       // get securties data from asset class
       let that = this
@@ -575,29 +681,34 @@ export default {
       })
     },
 
-    submitData() {
+    async submitData() {
       // submit all data to backend
       let that = this
       console.log('click submit button and post:' + '/getResult')
-      this.axios({
+      await this.axios({
         method: 'post',
         url: '/getResult',
         data: {
           startTime: moment(this.startTime).format('YYYY-MM-DD'),
-          endTime: moment(this.endTime).format('YYYY-MM-DD'),
-          modelFrequency: this.modelFrequency,
+          interval: this.interval,
           tableProductData: this.tableProductData,
-          tableStrategyData: this.tableStrategyData
+          tableStrategyData: this.checkAllGroup
         }
       })
       .then(function (response) {
-        that.tableReturnData = response.data.data.securityData
         console.log(response.data.data.securityData)
+        console.log(response.status)
+        that.tableReturnData = response.data.data.securityData
       }).catch(function (error) {
         console.log(error)
       })
+
       // this.$router.push({ path: '/Chart', query: { allData: this.tableReturnData}})
-      this.$router.push({ path: '/Chart', query: { allData: this.testChartData}})
+      // this.$router.push({ path: '/Chart', query: { allData: this.testChartData1}})
+      // test 1-n
+      this.$router.push({ path: '/Chart', query: { allData: this.test1toN}})
+      // test n-1
+      // this.$router.push({ path: '/Chart', query: { allData: this.testNto1}})
     },
 
     backhome() {
@@ -654,39 +765,78 @@ export default {
 }
 
 .content-center{
-  padding: 0 50px;
+  padding: 0 20px;
+}
+
+.card-title{
+  margin: 12px 0;
+}
+
+.result-title{
+  text-align: left;
+  border-bottom: 1px solid #e9e9e9;
+  padding-bottom: 5px;
+}
+
+.result-icon{
+  color: #5c6b77;
+  margin: 0 5px;
 }
 
 .config-selection{
+  float: left;
+  width: 100%;
   text-align: left;
-  margin: 10px 30px;
-  border-bottom: solid #e8eaec 1px;
-
+  margin: 10px 10px;
 }
 
-.config-selection img{
-  width: 30px;
-  height: auto;
+.config-selection1{
+  float: left;
+  width: 34%;
+  text-align: left;
+}
+
+.config-selection2{
+  float: left;
+  width: 38%;
+  text-align: left;
+}
+
+.config-selection3{
+  float: left;
+  width: 28%;
+  text-align: left;
+}
+
+.config-selection1 img{
+  width: auto;
+  height: 25px;
   vertical-align: middle;
 }
 
-.config-selection img.strategy{
-  width: 30px;
-  height: 31px;
+.config-selection2 img{
+  width: auto;
+  height: 25px;
   vertical-align: middle;
 }
 
-.config-selection .selection-title{
+.config-selection3 img.strategy{
+  width: 24px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.selection-title{
   display: inline-flex;
   margin-left: 10px;
 }
 
 .picker{
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
-.picker .picker-style {
-  width: 200px;
+.picker .picker-style{
+  width: 110px;
 }
 
 .picker .picker-left{
@@ -704,29 +854,51 @@ export default {
 .picker .picker-left2{
   display: inline-table;
   vertical-align: middle;
-  margin: 5px 0 5px 15px;
+  margin: 5px 0 5px 8px;
 }
 
 .picker .picker-button{
-  margin-left: 15px;
-  width: 200px;
+  margin-left: 5px;
+  width: 110px;
+}
+
+.picker-strategy{
+  margin: 10px 0;
 }
 
 .add-button{
-  margin-left: 15px;
+  margin-left: 5px;
+}
+
+.check-strategy{
+  border-bottom: 1px solid #e9e9e9;
+  padding-bottom:6px;
+  margin-bottom:8px;
+}
+
+.check-box{
+  font-size: 14px;
+}
+
+.check-box-label{
+  margin-right: 6px;
 }
 
 .data-table{
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.submit-button-line{
+  width: 100%;
+  height: 14px;
 }
 
 .submit-button{
-  margin-left: 93%;
-  margin-bottom: 20px
+  float: right;
 }
 
 .layout-footer-center{
-    text-align: center;
+  text-align: center;
 }
 
 .chart{

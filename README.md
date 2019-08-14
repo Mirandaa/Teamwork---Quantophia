@@ -138,10 +138,10 @@ Return data:
           "Market": "10.05%",
           "Diff": "1.98%",
           "Annualized Return": "20.19%",
-          "Max Drawdown": "2.390",
+          "MaxDrawdown": "2.390",
           "Alpha": "0.058",
           "Beta": "1.029",
-          "Sharpe Ratio": "0.089",
+          "SharpeRatio": "0.089",
       	},
         {
           "stratName": "KDJ",
@@ -150,10 +150,10 @@ Return data:
           "Market": "10.05%",
           "Diff": "1.98%",
           "Annualized Return": "20.19%",
-          "Max Drawdown": "2.390",
+          "MaxDrawdown": "2.390",
           "Alpha": "0.058",
           "Beta": "1.029",
-          "Sharpe Ratio": "0.089",
+          "SharpeRatio": "0.089",
         }
       ]
   	}

@@ -1,14 +1,15 @@
 <template>
 	<div>
-	<div v-for='returnData in chartData' class="single-result">
-		<h2 class="titleName"> {{ getSecName(returnData) }}</h2>
-		<Table :columns="resultDataColumns" :data="getCalcuData(returnData)" class="data-table">
-			<template slot-scope="{ row }" slot="strategy">
-				<strong>{{ row.strategy }}</strong>
-			</template>
-		</Table>
-		<line-chart :data="{labels: getDate(returnData), datasets: getDataSets(returnData)}" :options="testOptions"/>
-	</div>
+		<div v-for='returnData in chartData' class="single-result">
+			<h2 class="titleName"> {{ getSecName(returnData) }}</h2>
+			<line-chart :data="{labels: getDate(returnData), datasets: getDataSets(returnData)}" :options="testOptions"/>
+			<Table border size="small" :columns="resultDataColumns" :data="getCalcuData(returnData)">
+				<template slot-scope="{ row }" slot="strategy">
+					<strong>{{ row.strategy }}</strong>
+				</template>
+			</Table>
+
+		</div>
 	</div>
 </template>
 
@@ -31,28 +32,106 @@ export default {
           key: 'strategy'
         },
         {
-          title: 'Yield',
-          key: 'yield'
+        	title: 'Performance VS Market',
+        	align: 'center',
+        	children: [
+		        {
+		          title: 'Performance',
+		          key: 'performance',
+		          sortable: true,
+		          width: 130,
+		          render:(h, params) => {
+		          	// 需要延迟处理，否则颜色无法赋值
+		          	setTimeout(() => {
+		          	}, 20)
+		          	return h('span', {
+		          		style: {
+		          			color: (parseFloat(params.row.performance) > 0) ? "#f44336" : (parseFloat(params.row.performance) < 0 ? "#388e3c" : "#515a6e")
+		          		}
+		          	}, params.row.performance)
+		          }
+		        },
+		        {
+		          title: 'Market',
+		          key: 'market',
+		          sortable: true,
+		          render:(h, params) => {
+		          	// 需要延迟处理，否则颜色无法赋值
+		          	setTimeout(() => {
+		          	}, 20)
+		          	return h('span', {
+		          		style: {
+		          			color: (parseFloat(params.row.market) > 0) ? "#f44336" : (parseFloat(params.row.market) < 0 ? "#388e3c" : "#515a6e")
+		          		}
+		          	}, params.row.market)
+		          }
+		        },
+		        {
+		          title: 'Diff',
+		          key: 'diff',
+		          sortable: true
+		        }
+	        ]
         },
         {
-          title: 'Benchmark',
-          key: 'benchmark'
+        	title: '???',
+        	align: 'center',
+        	children: [
+	        	{
+		          title: 'Annualized Return',
+		          key: 'annReturn',
+		          sortable: true,
+		          width: 160,
+		          render:(h, params) => {
+		          	// 需要延迟处理，否则颜色无法赋值
+		          	setTimeout(() => {
+		          	}, 20)
+		          	return h('span', {
+		          		style: {
+		          			color: (parseFloat(params.row.annReturn) > 0) ? "#f44336" : (parseFloat(params.row.annReturn) < 0 ? "#388e3c" : "#515a6e")
+		          		}
+		          	}, params.row.annReturn)
+		          }
+		        },
+		        {
+		          title: 'Max Drawdown',
+		          key: 'maxDrawdown',
+		          sortable: true,
+		          width: 150,
+		          render:(h, params) => {
+		          	// 需要延迟处理，否则颜色无法赋值
+		          	setTimeout(() => {
+		          	}, 20)
+		          	return h('span', {
+		          		style: {
+		          			color: (parseFloat(params.row.maxDrawdown) > 0) ? "#f44336" : (parseFloat(params.row.maxDrawdown) < 0 ? "#388e3c" : "#515a6e")
+		          		}
+		          	}, params.row.maxDrawdown)
+		          }
+		        }
+        	]
         },
         {
-          title: 'Sharpe Ratio',
-          key: 'sharpeRatio'
-        },
-        {
-          title: 'Alpha',
-          key: 'alpha'
-        },
-        {
-          title: 'Beta',
-          key: 'beta'
-        },
-        {
-          title: 'Max Drawdown',
-          key: 'maxDrawdown'
+        	title: 'Risk Index',
+        	align: 'center',
+        	children: [
+		        {
+		          title: 'Alpha',
+		          key: 'alpha',
+		          sortable: true
+		        },
+		        {
+		          title: 'Beta',
+		          key: 'beta',
+		          sortable: true
+		        },
+		        {
+		          title: 'Sharpe Ratio',
+		          key: 'sharpeRatio',
+		          sortable: true,
+		          width: 130
+		        }
+        	]
         }
       ],
 
@@ -99,7 +178,6 @@ export default {
 		},
 
 		getDate(secNum) {
-			this.chartData = this.getData()
 			return secNum.date
 		},
 
@@ -124,16 +202,24 @@ export default {
 		},
 
 		getBorderColor(i) {
-			var colorList = ['rgba(225,103,110,1)', 'rgba(5,203,225,1)', 'rgba(65,105,225,1)', 'rgba(144,238,144,1)']
+			var colorList = ['rgba(225,103,110,1)', 'rgba(45,183,245,1)', 'rgba(65,105,225,1)', 'rgba(144,238,144,1)', 'rgba(255,182,193,1)', 'rgba(186,85,211,1)']
 			return colorList[i]
 		},
 
-		getYield(secNum, i) {
-			return secNum.calcResult[i].Yield
+		getPerformance(secNum, i) {
+			return secNum.calcResult[i].Performance
 		},
 
-		getBenchmark(secNum, i) {
-			return secNum.calcResult[i].Benchmark
+		getMarket(secNum, i) {
+			return secNum.calcResult[i].Market
+		},
+
+		getDiff(secNum, i) {
+			return secNum.calcResult[i].Diff
+		},
+
+		getAnnReturn(secNum, i) {
+			return secNum.calcResult[i].AnnualizedReturn
 		},
 
 		getSharpeRatio(secNum, i) {
@@ -157,12 +243,14 @@ export default {
 			for (var i = 0; i < sec.calcResult.length; i++) {
 				calcuData.push({
 					strategy: this.getLabel(sec, i), 
-					yield: this.getYield(sec, i), 
-					benchmark: this.getBenchmark(sec, i), 
-					sharpeRatio: this.getSharpeRatio(sec, i), 
+					performance: this.getPerformance(sec, i), 
+					market: this.getMarket(sec, i), 
+					diff: this.getDiff(sec, i),
+					annReturn: this.getAnnReturn(sec, i),
+					maxDrawdown: this.getMaxDrawdown(sec, i),
 					alpha: this.getAlpha(sec, i), 
-					beta: this.getBeta(sec, i), 
-					maxDrawdown: this.getMaxDrawdown(sec, i)
+					beta: this.getBeta(sec, i),
+					sharpeRatio: this.getSharpeRatio(sec, i)
 				})
 			}
 			return calcuData
@@ -191,6 +279,19 @@ export default {
 			}
 			return dataset
 		}
+	},
+
+	created() {
+		let transData = this.$route.query.allData
+		this.chartData = tansData
+	},
+
+	watch: {
+		'$route' (to, from) {
+			if (to.query.allData != from.query.allData) {
+				this.chartData = to.query.allData
+			}
+		}
 	}
 }
 </script>
@@ -199,6 +300,7 @@ export default {
 .single-result {
 	padding-bottom: 10px;
   margin-bottom: 20px;
+  margin-right: 20px;
   border-bottom: solid #e8eaec 1px;
 }
 
