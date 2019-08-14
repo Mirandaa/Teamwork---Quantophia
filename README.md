@@ -106,7 +106,7 @@ Parameter example:
 ```json
 {
   "startTime": "2017-01-01",
-  "interval: "126",
+  "interval": "126",
   "tableProductData": [
     {
       "assetClass": "FOREX",
@@ -134,22 +134,26 @@ Return data:
         {
           "stratName": "MACD",
           "regime": ["20", "30", "40"],
-          "Yield": "12.03%",
-          "Benchmark": "10.05%",
-          "Sharpe Ratio": "0.089",
+          "Performance": "12.03%",
+          "Market": "10.05%",
+          "Diff": "1.98%",
+          "Annualized Return": "20.19%",
+          "Max Drawdown": "2.390",
           "Alpha": "0.058",
           "Beta": "1.029",
-          "Max Drawdown": "2.390"
+          "Sharpe Ratio": "0.089",
       	},
         {
           "stratName": "KDJ",
           "regime": ["20", "30", "40"],
-          "Yield": "12.03%",
-          "Benchmark": "10.05%",
-          "Sharpe Ratio": "0.089",
+          "Performance": "12.03%",
+          "Market": "10.05%",
+          "Diff": "1.98%",
+          "Annualized Return": "20.19%",
+          "Max Drawdown": "2.390",
           "Alpha": "0.058",
           "Beta": "1.029",
-          "Max Drawdown": "2.390"
+          "Sharpe Ratio": "0.089",
         }
       ]
   	}
