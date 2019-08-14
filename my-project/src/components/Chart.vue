@@ -56,19 +56,8 @@ export default {
         }
       ],
 
-			// testData: {
-	  //     // labels 表示x轴的配置
-	  //     labels: this.getDate(),
-	  //     // datasets 是个数组 表示线性走势及对走势线的配置
-	  //     datasets: this.getDataSets(sec)
-	  //   },
-
 	    testOptions: {
 	      responsive: true,
-	   //    title: {
-				// 	display: true,
-				// 	text: this.getSecName()
-				// },
 	      maintainAspectRatio: false,
 	      tooltips: {
 					mode: 'index',
@@ -135,7 +124,7 @@ export default {
 		},
 
 		getBorderColor(i) {
-			var colorList = ['rgba(225,103,110,1)', 'rgba(5,203,225,1)', 'rgba(65,105,225,1)']
+			var colorList = ['rgba(225,103,110,1)', 'rgba(5,203,225,1)', 'rgba(65,105,225,1)', 'rgba(144,238,144,1)']
 			return colorList[i]
 		},
 
@@ -217,4 +206,5 @@ export default {
 	padding-bottom: 10px;
 	text-align: center;
 }
+
 </style>
