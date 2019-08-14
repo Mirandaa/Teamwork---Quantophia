@@ -106,8 +106,7 @@ Parameter example:
 ```json
 {
   "startTime": "2017-01-01",
-  "endTime": "2017-12-01",
-  "modelFrequency": "day",
+  "interval: "126",
   "tableProductData": [
     {
       "assetClass": "FOREX",
@@ -118,10 +117,7 @@ Parameter example:
       "security": "A"
     }
   ],
-  "tableStrategyData": [
-    {"strategy": "MACD"},
-    {"strategy": "KDJ"}
-  ]
+  "tableStrategyData": ["MACD", "KDJ"]
 }
 ```
 
