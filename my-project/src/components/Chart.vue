@@ -1,13 +1,14 @@
 <template>
 	<div>
-		<Table :columns="resultDataColumns" :data=getCalcuData() class="data-table">
+	<div v-for='returnData in chartData' class="single-result">
+		<h2 class="titleName"> {{ getSecName(returnData) }}</h2>
+		<Table :columns="resultDataColumns" :data="getCalcuData(returnData)" class="data-table">
 			<template slot-scope="{ row }" slot="strategy">
 				<strong>{{ row.strategy }}</strong>
 			</template>
 		</Table>
-		<!-- <p>{{ chartData[0].calcResult[0].Benchmark }}</p> -->
-		<line-chart :data="testData" :options="testOptions"/>
-
+		<line-chart :data="{labels: getDate(returnData), datasets: getDataSets(returnData)}" :options="testOptions"/>
+	</div>
 	</div>
 </template>
 
@@ -55,19 +56,19 @@ export default {
         }
       ],
 
-			testData: {
-	      // labels 表示x轴的配置
-	      labels: this.getDate(),
-	      // datasets 是个数组 表示线性走势及对走势线的配置
-	      datasets: this.getDataSets()
-	    },
+			// testData: {
+	  //     // labels 表示x轴的配置
+	  //     labels: this.getDate(),
+	  //     // datasets 是个数组 表示线性走势及对走势线的配置
+	  //     datasets: this.getDataSets(sec)
+	  //   },
 
 	    testOptions: {
 	      responsive: true,
-	      title: {
-					display: true,
-					text: this.getSecName()
-				},
+	   //    title: {
+				// 	display: true,
+				// 	text: this.getSecName()
+				// },
 	      maintainAspectRatio: false,
 	      tooltips: {
 					mode: 'index',
@@ -108,25 +109,25 @@ export default {
 			return this.$route.query.allData
 		},
 
-		getDate() {
+		getDate(secNum) {
 			this.chartData = this.getData()
-			return this.chartData[0].date
+			return secNum.date
 		},
 
-		getSecName() {
-			return this.chartData[0].secName
+		getSecName(secNum) {
+			return secNum.secName
 		},
 
-		getLabel(i) {
-			return this.chartData[0].calcResult[i].stratName
+		getLabel(secNum, i) {
+			return secNum.calcResult[i].stratName
 		},
 
-		getMarketData() {
-			return this.chartData[0].marketData
+		getMarketData(secNum) {
+			return secNum.marketData
 		},
 
-		getRegimeData(i) {
-			return this.chartData[0].calcResult[i].regime
+		getRegimeData(secNum, i) {
+			return secNum.calcResult[i].regime
 		},
 
 		getTransColor() {
@@ -138,47 +139,47 @@ export default {
 			return colorList[i]
 		},
 
-		getYield(i) {
-			return this.chartData[0].calcResult[i].Yield
+		getYield(secNum, i) {
+			return secNum.calcResult[i].Yield
 		},
 
-		getBenchmark(i) {
-			return this.chartData[0].calcResult[i].Benchmark
+		getBenchmark(secNum, i) {
+			return secNum.calcResult[i].Benchmark
 		},
 
-		getSharpeRatio(i) {
-			return this.chartData[0].calcResult[i].SharpeRatio
+		getSharpeRatio(secNum, i) {
+			return secNum.calcResult[i].SharpeRatio
 		},
 
-		getAlpha(i) {
-			return this.chartData[0].calcResult[i].Alpha
+		getAlpha(secNum, i) {
+			return secNum.calcResult[i].Alpha
 		},
 
-		getBeta(i) {
-			return this.chartData[0].calcResult[i].Beta
+		getBeta(secNum, i) {
+			return secNum.calcResult[i].Beta
 		},
 
-		getMaxDrawdown(i) {
-			return this.chartData[0].calcResult[i].MaxDrawdown
+		getMaxDrawdown(secNum, i) {
+			return secNum.calcResult[i].MaxDrawdown
 		},
 
-		getCalcuData() {
+		getCalcuData(sec) {
 			var calcuData = []
-			for (var i = 0; i < this.chartData[0].calcResult.length; i++) {
+			for (var i = 0; i < sec.calcResult.length; i++) {
 				calcuData.push({
-					strategy: this.getLabel(i), 
-					yield: this.getYield(i), 
-					benchmark: this.getBenchmark(i), 
-					sharpeRatio: this.getSharpeRatio(i), 
-					alpha: this.getAlpha(i), 
-					beta: this.getBeta(i), 
-					maxDrawdown: this.getMaxDrawdown(i)
+					strategy: this.getLabel(sec, i), 
+					yield: this.getYield(sec, i), 
+					benchmark: this.getBenchmark(sec, i), 
+					sharpeRatio: this.getSharpeRatio(sec, i), 
+					alpha: this.getAlpha(sec, i), 
+					beta: this.getBeta(sec, i), 
+					maxDrawdown: this.getMaxDrawdown(sec, i)
 				})
 			}
 			return calcuData
 		},
 
-		getDataSets() {
+		getDataSets(sec) {
 			var dataset = []
 			dataset.push({label: 'Market', 
 					fill: false,
@@ -186,17 +187,17 @@ export default {
 					backgroundColor: 'rgba(255,215,0,1)', 
 					borderColor: 'rgba(255,215,0,1)', 
 					pointBorderColor: this.getTransColor(), 
-					data: this.getMarketData()
+					data: this.getMarketData(sec)
 			})
-			for (var i = 0; i < this.chartData[0].calcResult.length; i++) {
+			for (var i = 0; i < sec.calcResult.length; i++) {
 				dataset.push({
-					label: this.getLabel(i), 
+					label: this.getLabel(sec, i), 
 					fill: false,
 					pointRadius: 0,
 					backgroundColor: this.getBorderColor(i), 
 					borderColor: this.getBorderColor(i), 
 					pointBorderColor: this.getTransColor(), 
-					data: this.getRegimeData(i)
+					data: this.getRegimeData(sec, i)
 				})
 			}
 			return dataset
@@ -204,3 +205,16 @@ export default {
 	}
 }
 </script>
+
+<style>
+.single-result {
+	padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: solid #e8eaec 1px;
+}
+
+.titleName {
+	padding-bottom: 10px;
+	text-align: center;
+}
+</style>
