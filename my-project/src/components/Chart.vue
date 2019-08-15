@@ -213,7 +213,7 @@ export default {
 		},
 
 		getBorderColor(i) {
-			var colorList = ['rgba(225,103,110,1)', 'rgba(45,183,245,1)', 'rgba(65,105,225,1)', 'rgba(144,238,144,1)', 'rgba(255,182,193,1)', 'rgba(186,85,211,1)']
+			var colorList = ['rgba(46,199,201,1)', 'rgba(182,162,222,1)', 'rgba(90,177,239,1)', 'rgba(255,185,128,1)', 'rgba(216,122,128,1)', 'rgba(141,152,179,1)']
 			return colorList[i]
 		},
 
@@ -270,22 +270,24 @@ export default {
 
 		getDataSets(sec) {
 			var dataset = []
-			dataset.push({label: 'Market', 
+			dataset.push({label: 'Market',
 					fill: false,
 					pointRadius: 0,
-					backgroundColor: 'rgba(255,215,0,1)', 
-					borderColor: 'rgba(255,215,0,1)', 
-					pointBorderColor: this.getTransColor(), 
+					backgroundColor: 'rgba(255,215,0,1)',
+					borderColor: 'rgba(255,215,0,1)',
+					borderWidth: 2,
+					pointBorderColor: this.getTransColor(),
 					data: this.getMarketData(sec)
 			})
 			for (var i = 0; i < sec.calcResult.length; i++) {
 				dataset.push({
-					label: this.getLabel(sec, i), 
+					label: this.getLabel(sec, i),
 					fill: false,
 					pointRadius: 0,
-					backgroundColor: this.getBorderColor(i), 
-					borderColor: this.getBorderColor(i), 
-					pointBorderColor: this.getTransColor(), 
+					backgroundColor: this.getBorderColor(i),
+					borderColor: this.getBorderColor(i),
+					borderWidth: 2,
+					pointBorderColor: this.getTransColor(),
 					data: this.getRegimeData(sec, i)
 				})
 			}
@@ -320,6 +322,7 @@ export default {
       		pointRadius: 0,
       		backgroundColor: this.getBorderColor(i),
       		borderColor: this.getBorderColor(i),
+      		borderWidth: 2,
       		pointBorderColor: this.getTransColor(), 
       		data: this.getRegimeData(secList[i], 0)
       	})
@@ -332,6 +335,7 @@ export default {
 					pointRadius: 0,
 					backgroundColor: this.getBorderColor(i),
 					borderColor: this.getBorderColor(i),
+					borderWidth: 2,
 					borderDash: [5, 2],
 					pointBorderColor: this.getTransColor(), 
 					data: secList[i].marketData
