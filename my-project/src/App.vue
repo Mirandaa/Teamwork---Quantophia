@@ -5,7 +5,7 @@
       <div @click="backhome()" class="title">
         <img src="./assets/logo.svg" class="logo">
       </div>
-      <div @click="backhome()" class="title">Back Testing Tool</div>
+      <div @click="backhome()" class="title">Quantophia</div>
     </Menu>
 
     <div class="layout">
@@ -102,6 +102,7 @@
                     
                     <div class="submit-button-line">
                       <Button type="primary" class="submit-button" @click="submitData()" :disabled="!startTime || !interval || tableProductData.length == 0 || checkAllGroup.length == 0">Submit</Button>
+                      <Button type="error" class="submit-button" @click="backhome()" :disabled="!startTime || !interval || tableProductData.length == 0 || checkAllGroup.length == 0">Reset</Button>
                     </div>
 
                     <Breadcrumb class="result-title">
@@ -140,11 +141,11 @@ export default {
   data() {
     return {
       isRouterAlive: true,
-      startTime: '2011-01-01',
+      startTime: '2011-06-01',
       endTime: '',
       startTimeOption: {},
       endTimeOption: {},
-      interval: '30',
+      interval: '180',
       assetClass: [
         {
           value: 'FOREX',
@@ -164,9 +165,9 @@ export default {
         }
       ],
       security: [],
-      indeterminate: false,
-      checkAll: true,
-      checkAllGroup: ['MACD', 'KDJ', 'KAMA', 'LR', 'SMA', 'DT'],
+      indeterminate: true,
+      checkAll: false,
+      checkAllGroup: ['MACD', 'KDJ', 'LR'],
       modelProduct: '',
       modelSecurity: '',
       productColumns: [
@@ -574,13 +575,221 @@ export default {
             }
           ]
         }
+      ],
+
+      testNto1: [
+        {
+          secName: "AEDAUD",
+          date: [
+                "2011-01-03",
+                "2011-01-04",
+                "2011-01-05",
+                "2011-01-06",
+                "2011-01-07",
+                "2011-01-08",
+                "2011-01-10",
+                "2011-01-11",
+                "2011-01-12",
+                "2011-01-13",
+                "2011-01-14",
+                "2011-01-15",
+                "2011-01-17",
+                "2011-01-18",
+                "2011-01-19",
+                "2011-01-20",
+                "2011-01-21",
+                "2011-01-22",
+                "2011-01-24",
+                "2011-01-25",
+                "2011-01-26",
+                "2011-01-27",
+                "2011-01-28",
+                "2011-01-29",
+                "2011-01-31"
+          ],
+          marketData: [
+                1.0,
+                1.011989509179468,
+                1.0206069689022106,
+                1.0228550018733609,
+                1.026227051330086,
+                1.0236043461970774,
+                1.026227051330086,
+                1.0348445110528288,
+                1.0236043461970776,
+                1.0232296740352191,
+                1.026227051330086,
+                1.0310977894342448,
+                1.029224428624953,
+                1.0247283626826527,
+                1.019108280254777,
+                1.0337204945672533,
+                1.03222180591982,
+                1.0299737729486695,
+                1.0228550018733606,
+                1.0228550018733606,
+                1.0236043461970774,
+                1.025103034844511,
+                1.0284750843012365,
+                1.0277257399775197,
+                1.0266017234919447
+          ],
+          calcResult: [
+            {
+              stratName: "MACD",
+              regime: [
+                    1.0,
+                    1.0,
+                    0.9915565345080763,
+                    0.9893772893772893,
+                    0.9861263234757212,
+                    0.9886530014641289,
+                    0.9861263234757213,
+                    0.9779145546705286,
+                    0.9886530014641288,
+                    0.9886530014641288,
+                    0.9886530014641288,
+                    0.9839827656287241,
+                    0.9857737790354019,
+                    0.9900989290713889,
+                    0.9900989290713889,
+                    1.0042952004808683,
+                    1.005753342332746,
+                    1.0079485115048075,
+                    1.0079485115048075,
+                    1.0079485115048075,
+                    1.0086869353227597,
+                    1.0101637829586643,
+                    1.0134866901394495,
+                    1.012748266321497,
+                    1.0116406305945689
+              ],
+              Performance: "101.16%",
+              Market: "-1.5%",
+              Diff: "102.66%",
+              AnnualizedReturn: "0.14%",
+              MaxDrawdown: -0.022,
+              Alpha: -0.003,
+              Beta: -0.088,
+              SharpeRatio: -0.54
+            }
+          ]
+        },
+        {
+          secName: "JPYUSD",
+          date: [
+                "2011-01-03",
+                "2011-01-04",
+                "2011-01-05",
+                "2011-01-06",
+                "2011-01-07",
+                "2011-01-08",
+                "2011-01-09",
+                "2011-01-10",
+                "2011-01-11",
+                "2011-01-12",
+                "2011-01-13",
+                "2011-01-14",
+                "2011-01-15",
+                "2011-01-16",
+                "2011-01-17",
+                "2011-01-18",
+                "2011-01-19",
+                "2011-01-20",
+                "2011-01-21",
+                "2011-01-22",
+                "2011-01-24",
+                "2011-01-25",
+                "2011-01-26",
+                "2011-01-27",
+                "2011-01-28",
+                "2011-01-29",
+                "2011-01-30",
+                "2011-01-31"
+          ],
+          marketData: [
+                1.0,
+                1.0,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9836065573770492,
+                0.9918032786885246,
+                0.9918032786885246,
+                0.9836065573770492,
+                0.9918032786885246,
+                1.0000000000000002,
+                0.9836065573770493,
+                0.9836065573770493,
+                0.9918032786885247,
+                0.9918032786885247,
+                0.9918032786885247,
+                0.9918032786885247,
+                0.9836065573770493,
+                0.9918032786885247,
+                1.0000000000000002,
+                1.0000000000000002,
+                0.9918032786885248
+          ],
+          calcResult: [
+            {
+              stratName: "MACD",
+              regime: [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0083333333333333,
+                    1.0083333333333333,
+                    1.0000683060109288,
+                    1.0167361111111108,
+                    1.0167361111111108,
+                    1.0167361111111108,
+                    1.0167361111111108,
+                    1.0167361111111108,
+                    1.0167361111111108,
+                    1.025208912037037,
+                    1.025208912037037,
+                    1.016805560299028,
+                    1.016805560299028,
+                    1.0252089120370367
+              ],
+              Performance: "102.52%",
+              Market: "3.34%",
+              Diff: "99.18%",
+              AnnualizedReturn: "0.3%",
+              MaxDrawdown: -0.008,
+              Alpha: 0.006,
+              Beta: 0.31,
+              SharpeRatio: 0.533
+            }
+          ]
+        }
       ]
     }
   },
+
   mounted() {
     this.onStartTimeChange(this.startTime)
     this.onEndTimeChange(this.endTime)
   },
+
   methods: {
     /*
          * Triggered when the start time changes, setting the date when the end time is not selectable
@@ -663,13 +872,11 @@ export default {
     },
 
     getSecurityData() {
-      // get securties data from asset class
       let that = this
       console.log('select asset class: ' + '/getSecurity')
       this.axios({
         method: 'get',
         url: '/getSecurity',
-        // timeout: 1000000 * 60 * 2,
         params: {
           asset_class: this.modelProduct
         }
@@ -682,9 +889,10 @@ export default {
     },
 
     async submitData() {
-      // submit all data to backend
       let that = this
       console.log('click submit button and post:' + '/getResult')
+      this.$Spin.show()
+
       await this.axios({
         method: 'post',
         url: '/getResult',
@@ -703,16 +911,17 @@ export default {
         console.log(error)
       })
 
-      // this.$router.push({ path: '/Chart', query: { allData: this.tableReturnData}})
-      // this.$router.push({ path: '/Chart', query: { allData: this.testChartData1}})
+      this.$Spin.hide()
+      this.$router.push({ path: '/Chart', query: { allData: this.tableReturnData}})
       // test 1-n
-      this.$router.push({ path: '/Chart', query: { allData: this.test1toN}})
+      // this.$router.push({ path: '/Chart', query: { allData: this.test1toN}})
       // test n-1
       // this.$router.push({ path: '/Chart', query: { allData: this.testNto1}})
     },
 
     backhome() {
       this.$router.push('/')
+      this.$router.go(0)
     },
 
     reload() {
@@ -894,7 +1103,9 @@ export default {
 }
 
 .submit-button{
+  width: 70px;
   float: right;
+  margin-left: 10px;
 }
 
 .layout-footer-center{
