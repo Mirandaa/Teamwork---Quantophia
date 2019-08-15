@@ -96,7 +96,6 @@ export default {
           width: 160,
           align: 'center',
           render:(h, params) => {
-          	// 需要延迟处理，否则颜色无法赋值
           	setTimeout(() => {
           	}, 20)
           	return h('span', {
@@ -135,7 +134,6 @@ export default {
 		          width: 150,
 		          align: 'center',
 		          render:(h, params) => {
-		          	// 需要延迟处理，否则颜色无法赋值
 		          	setTimeout(() => {
 		          	}, 20)
 		          	return h('span', {
@@ -358,18 +356,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-.single-result {
-	padding-bottom: 10px;
-  margin-bottom: 20px;
-  margin-right: 20px;
-  border-bottom: solid #e8eaec 1px;
-}
-
-.titleName {
-	padding-bottom: 10px;
-	text-align: center;
-}
-
-</style>
