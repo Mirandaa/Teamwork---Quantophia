@@ -5,6 +5,25 @@ Directories:
 >
 >  my-site: back end
 
+Technology:
+
+>Front end: 
+>
+>- Vue.js
+>
+>Back end:
+>
+>- Python
+>- Django
+>
+>Database:
+>
+>- mysql
+>
+>API style:
+>
+>- RESTful
+
 #### Run Vue
 
 ```
