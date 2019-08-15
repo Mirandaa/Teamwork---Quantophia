@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+APPEND_SLASH=False
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,7 +49,7 @@ MIDDLEWARE = [
     # 注意顺序，即在上一个的下面
     'django.middleware.common.CommonMiddleware',  # 新增 ✔
 
-    'django.middleware.csrf.CsrfViewMiddleware',  # 默认
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # 默认
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # 默认
     'django.contrib.messages.middleware.MessageMiddleware',  # 默认
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  # 默认

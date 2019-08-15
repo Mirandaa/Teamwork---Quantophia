@@ -321,6 +321,7 @@ export default {
     },
 
     backhome() {
+      this.$router.push({ path: '/' })
       this.$router.go(0)
     },
 

@@ -1,0 +1,17 @@
+{
+  "startTime": "2011-01-02",
+  "interval": "30",
+  "modelFrequency": "day",
+  "tableProductData": [
+    {
+      "assetClass": "FOREX",
+      "security": "AEDAUD"
+    }, {
+      "assetClass": "FOREX",
+      "security": "JPYUSD"
+    }
+
+
+  ],
+  "tableStrategyData": ["MACD","KDJ"]
+}

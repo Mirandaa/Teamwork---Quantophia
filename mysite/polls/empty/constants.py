@@ -2,14 +2,14 @@ class Constants:
 
     ASSET_CLASS = 'asset_class'
     SECURITY = 'security'
-    SQLCONNECT = "mysql://root:@localhost/mysql1"
+    SQLCONNECT = "mysql://root:Abcd1234@localhost/mysql1"
     ERRORMSG = 'buildAssetClass() return  security[] error'
     JSONPATH = "polls/data/"
     testMsg = {"data":"Welcom BackTest!!!"}
     STOCK = ""
     def getSQL(self,asset_class,security, start, end):
-        return "select date, ticker,open ,high,low,close,vol from "+asset_class+" where date > '"\
-          +str(start)+" ' and date < '"+str(end)+"' and ticker = '"+security+"';"
+        return "select distinct date, ticker,open ,high,low,close,vol from "+asset_class+" where date > '"\
+          +str(start)+"' and date < '"+str(end)+"' and ticker = '"+security+"';"
 
 class TableColumn:
     DATE = 'date'
@@ -17,6 +17,7 @@ class TableColumn:
     HIGH = 'high'
     LOW = 'low'
     CLOSE = 'close'
+    OPEN = 'open'
     VOL = 'vol'
     OI = 'oi'
     REGIME = "Regime"
@@ -26,7 +27,11 @@ class TableColumn:
     EXP_MARKET = "exp_Market"
     YIELD = "Yield"
     RESULTCOLS = [DATE,EXP_STRATEGY, EXP_MARKET]
-
 class Strategies:
-    KAMA = 'kama'
-    MACD = 'macd'
+    KAMA = 'KAMA'
+    MACD = 'MACD'
+    DualThrust ="DualThrust"
+    SimpleMultiAverage="SimpleMultiAverage"
+    KDJ = "KDJ"
+    LogisticRegression = "LogisticRegression"
+
